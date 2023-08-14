@@ -1,0 +1,1 @@
+Scaffold-DbContext Name=ConnectionStrings:AUPSDb Microsoft.EntityFrameWorkCore.SqlServer -outputdir Entities -DataAnnotations -Force
