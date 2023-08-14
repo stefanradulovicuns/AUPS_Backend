@@ -74,7 +74,7 @@ namespace AUPS_Backend.Controllers
         {
             var createdWorkplace = await _workplaceRepository.AddWorkplace(_mapper.Map<Workplace>(workplace));
 
-            return Ok(createdWorkplace);
+            return CreatedAtAction("GetWorkplace", new {id = createdWorkplace.WorkplaceId}, _mapper.Map<WorkplaceDTO>(createdWorkplace));
         }
 
         [HttpPut]
