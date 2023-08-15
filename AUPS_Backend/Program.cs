@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IWorkplaceRepository, WorkplaceRepository>();
 builder.Services.AddScoped<IOrganizationalUnitRepository, OrganizationalUnitRepository>();
+builder.Services.AddScoped<IProductionOrderRepository, ProductionOrderRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
