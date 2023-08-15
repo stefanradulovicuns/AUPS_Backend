@@ -73,7 +73,7 @@ create table object_of_labor (
 	object_of_labor_id uniqueidentifier not null primary key,
 	object_of_labor_name nvarchar(100) not null unique,
 	description nvarchar(max) not null,
-	price numeric(10, 2),
+	price numeric(10, 2) not null,
 	stock_quantity int not null,
 	warehouse_id uniqueidentifier not null foreign key references warehouse(warehouse_id) on delete cascade
 );

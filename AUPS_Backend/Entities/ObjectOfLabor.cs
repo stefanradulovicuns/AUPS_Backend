@@ -22,7 +22,7 @@ public partial class ObjectOfLabor
     public string Description { get; set; } = null!;
 
     [Column("price", TypeName = "numeric(10, 2)")]
-    public decimal? Price { get; set; }
+    public decimal Price { get; set; }
 
     [Column("stock_quantity")]
     public int StockQuantity { get; set; }
