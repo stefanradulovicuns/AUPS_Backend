@@ -2,9 +2,9 @@
 {
     public class ObjectOfLaborCreateDTO
     {
-        public string? ObjectOfLaborName { get; set; } = null!;
+        public string? ObjectOfLaborName { get; set; }
 
-        public string? Description { get; set; } = null!;
+        public string? Description { get; set; }
 
         public decimal Price { get; set; }
 

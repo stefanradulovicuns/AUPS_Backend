@@ -8,9 +8,9 @@ namespace AUPS_Backend.DTO
     {
         public Guid ObjectOfLaborId { get; set; }
 
-        public string? ObjectOfLaborName { get; set; } = null!;
+        public string? ObjectOfLaborName { get; set; }
 
-        public string? Description { get; set; } = null!;
+        public string? Description { get; set; }
 
         public decimal Price { get; set; }
 
