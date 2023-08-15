@@ -44,99 +44,99 @@ public partial class AupsContext : DbContext
     {
         modelBuilder.Entity<Employee>(entity =>
         {
-            entity.HasKey(e => e.EmployeeId).HasName("PK__employee__C52E0BA8922F078B");
+            entity.HasKey(e => e.EmployeeId).HasName("PK__employee__C52E0BA822845859");
 
             entity.Property(e => e.EmployeeId).ValueGeneratedNever();
 
-            entity.HasOne(d => d.OrganizationalUnit).WithMany(p => p.Employees).HasConstraintName("FK__employee__organi__4979DDF4");
+            entity.HasOne(d => d.OrganizationalUnit).WithMany(p => p.Employees).HasConstraintName("FK__employee__organi__39987BE6");
 
-            entity.HasOne(d => d.Workplace).WithMany(p => p.Employees).HasConstraintName("FK__employee__workpl__4885B9BB");
+            entity.HasOne(d => d.Workplace).WithMany(p => p.Employees).HasConstraintName("FK__employee__workpl__38A457AD");
         });
 
         modelBuilder.Entity<ObjectOfLabor>(entity =>
         {
-            entity.HasKey(e => e.ObjectOfLaborId).HasName("PK__object_o__132DFBC9A6505A4D");
+            entity.HasKey(e => e.ObjectOfLaborId).HasName("PK__object_o__132DFBC9BD6DAD16");
 
             entity.Property(e => e.ObjectOfLaborId).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Warehouse).WithMany(p => p.ObjectOfLabors).HasConstraintName("FK__object_of__wareh__4F32B74A");
+            entity.HasOne(d => d.Warehouse).WithMany(p => p.ObjectOfLabors).HasConstraintName("FK__object_of__wareh__3F51553C");
         });
 
         modelBuilder.Entity<ObjectOfLaborTechnologicalProcedure>(entity =>
         {
-            entity.HasKey(e => e.ObjectOfLaborTechnologicalProcedureId).HasName("PK__object_o__7D4DF5F1F2053BB6");
+            entity.HasKey(e => e.ObjectOfLaborTechnologicalProcedureId).HasName("PK__object_o__7D4DF5F1514AE950");
 
             entity.Property(e => e.ObjectOfLaborTechnologicalProcedureId).ValueGeneratedNever();
 
-            entity.HasOne(d => d.ObjectOfLabor).WithMany(p => p.ObjectOfLaborTechnologicalProcedures).HasConstraintName("FK__object_of__objec__642DD430");
+            entity.HasOne(d => d.ObjectOfLabor).WithMany(p => p.ObjectOfLaborTechnologicalProcedures).HasConstraintName("FK__object_of__objec__544C7222");
 
-            entity.HasOne(d => d.TechnologicalProcedure).WithMany(p => p.ObjectOfLaborTechnologicalProcedures).HasConstraintName("FK__object_of__techn__6521F869");
+            entity.HasOne(d => d.TechnologicalProcedure).WithMany(p => p.ObjectOfLaborTechnologicalProcedures).HasConstraintName("FK__object_of__techn__5540965B");
         });
 
         modelBuilder.Entity<OrganizationalUnit>(entity =>
         {
-            entity.HasKey(e => e.OrganizationalUnitId).HasName("PK__organiza__21A883E2859B0F9B");
+            entity.HasKey(e => e.OrganizationalUnitId).HasName("PK__organiza__21A883E2A0413E58");
 
             entity.Property(e => e.OrganizationalUnitId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Plant>(entity =>
         {
-            entity.HasKey(e => e.PlantId).HasName("PK__plant__A576B3B4D8535EBE");
+            entity.HasKey(e => e.PlantId).HasName("PK__plant__A576B3B4F4CF2CC4");
 
             entity.Property(e => e.PlantId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<ProductionOrder>(entity =>
         {
-            entity.HasKey(e => e.ProductionOrderId).HasName("PK__producti__C099D22F533A1C24");
+            entity.HasKey(e => e.ProductionOrderId).HasName("PK__producti__C099D22FCF047D9B");
 
             entity.Property(e => e.ProductionOrderId).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Employee).WithMany(p => p.ProductionOrders).HasConstraintName("FK__productio__emplo__520F23F5");
+            entity.HasOne(d => d.Employee).WithMany(p => p.ProductionOrders).HasConstraintName("FK__productio__emplo__422DC1E7");
 
-            entity.HasOne(d => d.ObjectOfLabor).WithMany(p => p.ProductionOrders).HasConstraintName("FK__productio__objec__5303482E");
+            entity.HasOne(d => d.ObjectOfLabor).WithMany(p => p.ProductionOrders).HasConstraintName("FK__productio__objec__4321E620");
         });
 
         modelBuilder.Entity<ProductionPlan>(entity =>
         {
-            entity.HasKey(e => e.ProductionPlanId).HasName("PK__producti__F3E379D5267BF97C");
+            entity.HasKey(e => e.ProductionPlanId).HasName("PK__producti__F3E379D5CD0F2289");
 
             entity.Property(e => e.ProductionPlanId).ValueGeneratedNever();
 
-            entity.HasOne(d => d.ObjectOfLabor).WithMany(p => p.ProductionPlans).HasConstraintName("FK__productio__objec__55DFB4D9");
+            entity.HasOne(d => d.ObjectOfLabor).WithMany(p => p.ProductionPlans).HasConstraintName("FK__productio__objec__45FE52CB");
         });
 
         modelBuilder.Entity<TechnologicalProcedure>(entity =>
         {
-            entity.HasKey(e => e.TechnologicalProcedureId).HasName("PK__technolo__2192D019EB1CFADE");
+            entity.HasKey(e => e.TechnologicalProcedureId).HasName("PK__technolo__2192D019DFA30232");
 
             entity.Property(e => e.TechnologicalProcedureId).ValueGeneratedNever();
 
-            entity.HasOne(d => d.OrganizationalUnitNavigation).WithMany(p => p.TechnologicalProcedures).HasConstraintName("FK__technolog__organ__5F691F13");
+            entity.HasOne(d => d.OrganizationalUnit).WithMany(p => p.TechnologicalProcedures).HasConstraintName("FK__technolog__organ__4F87BD05");
 
-            entity.HasOne(d => d.Plant).WithMany(p => p.TechnologicalProcedures).HasConstraintName("FK__technolog__plant__605D434C");
+            entity.HasOne(d => d.Plant).WithMany(p => p.TechnologicalProcedures).HasConstraintName("FK__technolog__plant__507BE13E");
 
-            entity.HasOne(d => d.TechnologicalSystemNavigation).WithMany(p => p.TechnologicalProcedures).HasConstraintName("FK__technolog__techn__61516785");
+            entity.HasOne(d => d.TechnologicalSystem).WithMany(p => p.TechnologicalProcedures).HasConstraintName("FK__technolog__techn__51700577");
         });
 
         modelBuilder.Entity<TechnologicalSystem>(entity =>
         {
-            entity.HasKey(e => e.TechnologicalSystemId).HasName("PK__technolo__8234801770A31571");
+            entity.HasKey(e => e.TechnologicalSystemId).HasName("PK__technolo__823480177CF18B5F");
 
             entity.Property(e => e.TechnologicalSystemId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Warehouse>(entity =>
         {
-            entity.HasKey(e => e.WarehouseId).HasName("PK__warehous__734FE6BFD28E32A2");
+            entity.HasKey(e => e.WarehouseId).HasName("PK__warehous__734FE6BF2BC6D417");
 
             entity.Property(e => e.WarehouseId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Workplace>(entity =>
         {
-            entity.HasKey(e => e.WorkplaceId).HasName("PK__workplac__8E6F41E7144262C9");
+            entity.HasKey(e => e.WorkplaceId).HasName("PK__workplac__8E6F41E728F334B9");
 
             entity.Property(e => e.WorkplaceId).ValueGeneratedNever();
         });

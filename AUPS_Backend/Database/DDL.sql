@@ -109,9 +109,9 @@ create table technological_procedure (
 	technological_procedure_id uniqueidentifier not null primary key,
 	technological_procedure_name nvarchar(100) not null unique,
 	duration int not null,
-	organizational_unit uniqueidentifier not null foreign key references organizational_unit(organizational_unit_id) on delete cascade,
+	organizational_unit_id uniqueidentifier not null foreign key references organizational_unit(organizational_unit_id) on delete cascade,
 	plant_id uniqueidentifier not null foreign key references plant(plant_id) on delete cascade,
-	technological_system uniqueidentifier not null foreign key references technological_system(technological_system_id) on delete cascade
+	technological_system_id uniqueidentifier not null foreign key references technological_system(technological_system_id) on delete cascade
 );
 
 create table object_of_labor_technological_procedure (

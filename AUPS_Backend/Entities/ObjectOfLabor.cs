@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AUPS_Backend.Entities;
 
 [Table("object_of_labor")]
-[Index("ObjectOfLaborName", Name = "UQ__object_o__55DFE9561D13D691", IsUnique = true)]
+[Index("ObjectOfLaborName", Name = "UQ__object_o__55DFE956C20F1A1C", IsUnique = true)]
 public partial class ObjectOfLabor
 {
     [Key]

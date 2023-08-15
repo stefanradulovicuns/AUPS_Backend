@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace AUPS_Backend.Entities;
 
 [Table("employee")]
-[Index("Jmbg", Name = "UQ__employee__8C39FC671A39EF27", IsUnique = true)]
-[Index("Email", Name = "UQ__employee__AB6E6164D95C438C", IsUnique = true)]
+[Index("Jmbg", Name = "UQ__employee__8C39FC6751DCDFA0", IsUnique = true)]
+[Index("Email", Name = "UQ__employee__AB6E61644279CDEF", IsUnique = true)]
 public partial class Employee
 {
     [Key]

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AUPS_Backend.Entities;
 
 [Table("technological_procedure")]
-[Index("TechnologicalProcedureName", Name = "UQ__technolo__07C953C84EF6CF04", IsUnique = true)]
+[Index("TechnologicalProcedureName", Name = "UQ__technolo__07C953C8CB22F26E", IsUnique = true)]
 public partial class TechnologicalProcedure
 {
     [Key]
@@ -21,27 +21,27 @@ public partial class TechnologicalProcedure
     [Column("duration")]
     public int Duration { get; set; }
 
-    [Column("organizational_unit")]
-    public Guid OrganizationalUnit { get; set; }
+    [Column("organizational_unit_id")]
+    public Guid OrganizationalUnitId { get; set; }
 
     [Column("plant_id")]
     public Guid PlantId { get; set; }
 
-    [Column("technological_system")]
-    public Guid TechnologicalSystem { get; set; }
+    [Column("technological_system_id")]
+    public Guid TechnologicalSystemId { get; set; }
 
     [InverseProperty("TechnologicalProcedure")]
     public virtual ICollection<ObjectOfLaborTechnologicalProcedure> ObjectOfLaborTechnologicalProcedures { get; set; } = new List<ObjectOfLaborTechnologicalProcedure>();
 
-    [ForeignKey("OrganizationalUnit")]
+    [ForeignKey("OrganizationalUnitId")]
     [InverseProperty("TechnologicalProcedures")]
-    public virtual OrganizationalUnit OrganizationalUnitNavigation { get; set; } = null!;
+    public virtual OrganizationalUnit OrganizationalUnit { get; set; } = null!;
 
     [ForeignKey("PlantId")]
     [InverseProperty("TechnologicalProcedures")]
     public virtual Plant Plant { get; set; } = null!;
 
-    [ForeignKey("TechnologicalSystem")]
+    [ForeignKey("TechnologicalSystemId")]
     [InverseProperty("TechnologicalProcedures")]
-    public virtual TechnologicalSystem TechnologicalSystemNavigation { get; set; } = null!;
+    public virtual TechnologicalSystem TechnologicalSystem { get; set; } = null!;
 }

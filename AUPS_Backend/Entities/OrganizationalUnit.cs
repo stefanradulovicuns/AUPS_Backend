@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AUPS_Backend.Entities;
 
 [Table("organizational_unit")]
-[Index("OrganizationalUnitName", Name = "UQ__organiza__723090DBB49B3EF8", IsUnique = true)]
+[Index("OrganizationalUnitName", Name = "UQ__organiza__723090DBF6D2E546", IsUnique = true)]
 public partial class OrganizationalUnit
 {
     [Key]
@@ -21,6 +21,6 @@ public partial class OrganizationalUnit
     [InverseProperty("OrganizationalUnit")]
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
-    [InverseProperty("OrganizationalUnitNavigation")]
+    [InverseProperty("OrganizationalUnit")]
     public virtual ICollection<TechnologicalProcedure> TechnologicalProcedures { get; set; } = new List<TechnologicalProcedure>();
 }
