@@ -12,6 +12,7 @@ builder.Services.AddScoped<IProductionOrderRepository, ProductionOrderRepository
 builder.Services.AddScoped<IObjectOfLaborRepository, ObjectOfLaborRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<IProductionPlanRepository, ProductionPlanRepository>();
+builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
