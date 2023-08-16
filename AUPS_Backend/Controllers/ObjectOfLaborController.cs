@@ -52,7 +52,7 @@ namespace AUPS_Backend.Controllers
 
             int totalCount = objectOfLabors.Count();
             objectOfLabors = objectOfLabors.Skip(page > 0 ? (page - 1) * count : 0)
-                .Take(count)
+                .Take(count > 0 ? count : totalCount)
                 .ToList();
 
             if (!objectOfLabors.Any())

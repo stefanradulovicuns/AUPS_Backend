@@ -46,7 +46,7 @@ namespace AUPS_Backend.Controllers
 
             int totalCount = objectOfLaborTechnologicalProcedures.Count();
             objectOfLaborTechnologicalProcedures = objectOfLaborTechnologicalProcedures.Skip(page > 0 ? (page - 1) * count : 0)
-                .Take(count)
+                .Take(count > 0 ? count : totalCount)
                 .ToList();
 
             if (!objectOfLaborTechnologicalProcedures.Any())
