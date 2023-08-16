@@ -15,6 +15,7 @@ builder.Services.AddScoped<IProductionPlanRepository, ProductionPlanRepository>(
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 builder.Services.AddScoped<ITechnologicalSystemRepository, TechnologicalSystemRepository>();
 builder.Services.AddScoped<ITechnologicalProcedureRepository, TechnologicalProcedureRepository>();
+builder.Services.AddScoped<IObjectOfLaborTechnologicalProcedureRepository, ObjectOfLaborTechnologicalProcedureRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
