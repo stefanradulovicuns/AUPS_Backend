@@ -16,11 +16,17 @@ namespace AUPS_Backend.Controllers
     public class ObjectOfLaborTechnologicalProcedureController : ControllerBase
     {
         private readonly IObjectOfLaborTechnologicalProcedureRepository _objectOfLaborTechnologicalProcedureRepository;
+        private readonly ITechnologicalSystemRepository _technologicalSystemRepository;
+        private readonly IPlantRepository _plantRepository;
+        private readonly IOrganizationalUnitRepository _organizationalUnitRepository;
         private readonly IMapper _mapper;
 
-        public ObjectOfLaborTechnologicalProcedureController(IObjectOfLaborTechnologicalProcedureRepository objectOfLaborTechnologicalProcedureRepository, IMapper mapper)
+        public ObjectOfLaborTechnologicalProcedureController(IObjectOfLaborTechnologicalProcedureRepository objectOfLaborTechnologicalProcedureRepository, ITechnologicalSystemRepository technologicalSystemRepository, IPlantRepository plantRepository, IOrganizationalUnitRepository organizationalUnitRepository, IMapper mapper)
         {
             _objectOfLaborTechnologicalProcedureRepository = objectOfLaborTechnologicalProcedureRepository;
+            _technologicalSystemRepository = technologicalSystemRepository;
+            _plantRepository = plantRepository;
+            _organizationalUnitRepository = organizationalUnitRepository;
             _mapper = mapper;
         }
 
@@ -66,6 +72,20 @@ namespace AUPS_Backend.Controllers
             }
 
             var objectOfLaborTechnologicalProceduresDto = _mapper.Map<List<ObjectOfLaborTechnologicalProcedureDTO>>(objectOfLaborTechnologicalProcedures);
+            int index = 0;
+            foreach(var objectOfLaborTechnologicalProcedureDto in objectOfLaborTechnologicalProceduresDto)
+            {
+                var technologicalSystem = await _technologicalSystemRepository.GetTechnologicalSystemById(objectOfLaborTechnologicalProcedures[index].TechnologicalProcedure.TechnologicalSystemId);
+                objectOfLaborTechnologicalProcedureDto.TechnologicalSystemName = technologicalSystem != null ? technologicalSystem.TechnologicalSystemName : "";
+
+                var plant = await _plantRepository.GetPlantById(objectOfLaborTechnologicalProcedures[index].TechnologicalProcedure.PlantId);
+                objectOfLaborTechnologicalProcedureDto.PlantName = plant != null ? plant.PlantName : "";
+
+                var organizationalUnit = await _organizationalUnitRepository.GetOrganizationalUnitById(objectOfLaborTechnologicalProcedures[index].TechnologicalProcedure.OrganizationalUnitId);
+                objectOfLaborTechnologicalProcedureDto.OrganizationalUnitName = organizationalUnit != null ? organizationalUnit.OrganizationalUnitName : "";
+
+                index++;
+            }
             objectOfLaborTechnologicalProceduresDto[0].TotalCount = totalCount;
 
             return Ok(objectOfLaborTechnologicalProceduresDto);
