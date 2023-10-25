@@ -37,6 +37,11 @@ namespace AUPS_Backend.Repositories
             return await _context.Workplaces.FirstOrDefaultAsync(w => w.WorkplaceId == id);
         }
 
+        public async Task<Workplace?> GetWorkplaceByName(string name)
+        {
+            return await _context.Workplaces.FirstOrDefaultAsync(w => w.WorkplaceName == name);
+        }
+
         public async Task<Workplace> UpdateWorkplace(Workplace workplace)
         {
             Workplace? matchingWorkplace = await GetWorkplaceById(workplace.WorkplaceId);

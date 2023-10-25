@@ -1,6 +1,15 @@
 using AUPS_Backend.Entities;
+using AUPS_Backend.Identity;
 using AUPS_Backend.Repositories;
+using AUPS_Backend.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,9 +26,15 @@ builder.Services.AddScoped<ITechnologicalSystemRepository, TechnologicalSystemRe
 builder.Services.AddScoped<ITechnologicalProcedureRepository, TechnologicalProcedureRepository>();
 builder.Services.AddScoped<IObjectOfLaborTechnologicalProcedureRepository, ObjectOfLaborTechnologicalProcedureRepository>();
 
+builder.Services.AddTransient<IJwtService, JwtService>();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opt =>
+    {
+        opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    }); ;
 
 builder.Services.AddDbContext<AupsContext>(options =>
 {
@@ -40,6 +55,41 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+{
+    options.Password.RequiredLength = 5;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireDigit = false;
+}).AddEntityFrameworkStores<AupsContext>()
+.AddDefaultTokenProviders()
+.AddUserStore<UserStore<ApplicationUser, ApplicationRole, AupsContext, Guid>>()
+.AddRoleStore<RoleStore<ApplicationRole, AupsContext, Guid>>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true
+    };
+});
+
+builder.Services.AddAuthorization(options =>
+{
+
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,6 +105,7 @@ app.UseCors();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

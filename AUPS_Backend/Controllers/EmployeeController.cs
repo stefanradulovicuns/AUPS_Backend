@@ -1,24 +1,34 @@
 ﻿using AUPS_Backend.DTO;
 using AUPS_Backend.Entities;
 using AUPS_Backend.Enums;
+using AUPS_Backend.Identity;
 using AUPS_Backend.Repositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AUPS_Backend.Controllers
 {
+    [Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IWorkplaceRepository _workplaceRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IMapper mapper)
+        public EmployeeController(IEmployeeRepository employeeRepository, IWorkplaceRepository workplaceRepository, IMapper mapper, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
             _employeeRepository = employeeRepository;
+            _workplaceRepository = workplaceRepository;
             _mapper = mapper;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -94,9 +104,69 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<EmployeeDTO>> CreateEmployee(EmployeeCreateDTO employee)
         {
+            if (!(await _employeeRepository.GetAllEmployees()).Any())
+            {
+                Workplace? adminWorkplace = await _workplaceRepository.GetWorkplaceByName(UserTypeOptions.Admin.ToString());
+                
+                if (adminWorkplace == null)
+                {
+                    adminWorkplace = new Workplace()
+                    {
+                        WorkplaceName = UserTypeOptions.Admin.ToString()
+                    };
+                    await _workplaceRepository.AddWorkplace(adminWorkplace);
+
+                    if (await _roleManager.FindByNameAsync(UserTypeOptions.Admin.ToString()) is null)
+                    {
+                        ApplicationRole adminRole = new ApplicationRole()
+                        {
+                            Name = UserTypeOptions.Admin.ToString()
+                        };
+                        await _roleManager.CreateAsync(adminRole);
+                    }
+                }
+
+                if (employee.WorkplaceId != adminWorkplace?.WorkplaceId)
+                {
+                    return BadRequest("First user should be admin");
+                }
+            }
+            else
+            {
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser == null
+                    || !(await _userManager.IsInRoleAsync(currentUser, UserTypeOptions.Admin.ToString())))
+                {
+                    return Unauthorized();
+                }
+            }
+
             var createdEmployee = await _employeeRepository.AddEmployee(_mapper.Map<Employee>(employee));
+
+            if (createdEmployee == null)
+            {
+                return Problem("Error during creating new employee");
+            }
+
+            ApplicationUser user = new ApplicationUser()
+            {
+                Email = createdEmployee.Email,
+                PhoneNumber = createdEmployee.PhoneNumber,
+                UserName = createdEmployee.Email,
+                PersonName = createdEmployee.Email
+            };
+
+            var workplace = await _workplaceRepository.GetWorkplaceById(createdEmployee.WorkplaceId);
+
+            IdentityResult result = await _userManager.CreateAsync(user, employee.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, workplace?.WorkplaceName);
+            }
 
             return CreatedAtAction("GetEmployee", new { id = createdEmployee.EmployeeId }, _mapper.Map<EmployeeDTO>(createdEmployee));
         }
@@ -110,7 +180,47 @@ namespace AUPS_Backend.Controllers
                 return NotFound();
             }
 
+            Employee oldEmployee = new Employee()
+            {
+                EmployeeId = matchingEmployee.EmployeeId,
+                FirstName = matchingEmployee.FirstName,
+                LastName = matchingEmployee.LastName,
+                Email = matchingEmployee.Email,
+                Password = matchingEmployee.Password,
+                Jmbg = matchingEmployee.Jmbg,
+                PhoneNumber = matchingEmployee.PhoneNumber,
+                Address = matchingEmployee.Address,
+                City = matchingEmployee.City,
+                Sallary = matchingEmployee.Sallary,
+                DateOfEmployment = matchingEmployee.DateOfEmployment,
+                WorkplaceId = matchingEmployee.WorkplaceId,
+                OrganizationalUnitId = matchingEmployee.OrganizationalUnitId
+            };
+
             var updatedEmployee = await _employeeRepository.UpdateEmployee(_mapper.Map<Employee>(employee));
+            var user = await _userManager.FindByEmailAsync(oldEmployee.Email);
+            user.Email = updatedEmployee.Email;
+            user.PhoneNumber = updatedEmployee.PhoneNumber;
+            user.UserName = updatedEmployee.Email;
+            user.PersonName = updatedEmployee.Email;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                if (oldEmployee.WorkplaceId != updatedEmployee.WorkplaceId)
+                {
+                    var oldWorkplace = await _workplaceRepository.GetWorkplaceById(oldEmployee.WorkplaceId);
+                    var newWorkplace = await _workplaceRepository.GetWorkplaceById(updatedEmployee.WorkplaceId);
+                    await _userManager.RemoveFromRoleAsync(user, oldWorkplace?.WorkplaceName);
+                    await _userManager.AddToRoleAsync(user, newWorkplace?.WorkplaceName);
+                }
+            }
+            else
+            {
+                string errorMessage = string.Join(" | ", result.Errors.Select(e => e.Description));
+                return Problem(errorMessage);
+            }
 
             return Ok(_mapper.Map<EmployeeDTO>(updatedEmployee));
         }
@@ -118,11 +228,22 @@ namespace AUPS_Backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(Guid id)
         {
-            bool isDeleted = await _employeeRepository.DeleteEmployee(id);
-            if (!isDeleted)
+            var employee = await _employeeRepository.GetEmployeeById(id);
+
+            if (employee == null)
             {
                 return NotFound();
             }
+
+            var user = await _userManager.FindByEmailAsync(employee.Email);
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                string errorMessage = string.Join(" | ", result.Errors.Select(e => e.Description));
+                return Problem(errorMessage);
+            }
+
+            await _employeeRepository.DeleteEmployee(id);
 
             return NoContent();
         }

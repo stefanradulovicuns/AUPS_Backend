@@ -1,24 +1,31 @@
 ﻿using AUPS_Backend.DTO;
 using AUPS_Backend.Entities;
 using AUPS_Backend.Enums;
+using AUPS_Backend.Identity;
 using AUPS_Backend.Repositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
+    //[Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
     [Route("api/[controller]")]
     [ApiController]
     public class WorkplaceController : ControllerBase
     {
         private readonly IWorkplaceRepository _workplaceRepository;
         private readonly IMapper _mapper;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public WorkplaceController(IWorkplaceRepository workplaceRepository, IMapper mapper)
+        public WorkplaceController(IWorkplaceRepository workplaceRepository, IMapper mapper, RoleManager<ApplicationRole> roleManager)
         {
             _workplaceRepository = workplaceRepository;
             _mapper = mapper;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -74,6 +81,20 @@ namespace AUPS_Backend.Controllers
         {
             var createdWorkplace = await _workplaceRepository.AddWorkplace(_mapper.Map<Workplace>(workplace));
 
+            if (createdWorkplace == null)
+            {
+                return Problem("Error during creating new workplace");
+            }
+
+            if (await _roleManager.FindByNameAsync(createdWorkplace.WorkplaceName) is null)
+            {
+                ApplicationRole role = new ApplicationRole()
+                {
+                    Name = createdWorkplace.WorkplaceName
+                };
+                await _roleManager.CreateAsync(role);
+            }
+
             return CreatedAtAction("GetWorkplace", new {id = createdWorkplace.WorkplaceId}, _mapper.Map<WorkplaceDTO>(createdWorkplace));
         }
 
@@ -87,7 +108,16 @@ namespace AUPS_Backend.Controllers
                 return NotFound();
             }
 
+            Workplace oldWorkplace = new Workplace()
+            {
+                WorkplaceId = matchingWorkplace.WorkplaceId,
+                WorkplaceName = matchingWorkplace.WorkplaceName
+            };
+
             var updatedWorkplace = await _workplaceRepository.UpdateWorkplace(_mapper.Map<Workplace>(workpalce));
+            var role = await _roleManager.FindByNameAsync(oldWorkplace.WorkplaceName);
+            role.Name = updatedWorkplace.WorkplaceName;
+            await _roleManager.UpdateAsync(role);
 
             return Ok(_mapper.Map<WorkplaceDTO>(updatedWorkplace));
         }
@@ -95,11 +125,15 @@ namespace AUPS_Backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteWorkplace(Guid id)
         {
-            bool isDeleted = await _workplaceRepository.DeleteWorkplace(id);
-            if (!isDeleted)
+            var workplace = await _workplaceRepository.GetWorkplaceById(id);
+            if (workplace == null)
             {
                 return NotFound();
             }
+
+            var role = await _roleManager.FindByNameAsync(workplace?.WorkplaceName);
+            await _roleManager.DeleteAsync(role);
+            await _workplaceRepository.DeleteWorkplace(id);
 
             return NoContent();
         }

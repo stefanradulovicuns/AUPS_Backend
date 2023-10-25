@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using AUPS_Backend.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AUPS_Backend.Entities;
 
-public partial class AupsContext : DbContext
+public partial class AupsContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
     public AupsContext()
     {
@@ -42,6 +44,8 @@ public partial class AupsContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.HasKey(e => e.EmployeeId).HasName("PK__employee__C52E0BA822845859");

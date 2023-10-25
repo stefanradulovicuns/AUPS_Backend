@@ -3,11 +3,14 @@ using AUPS_Backend.Entities;
 using AUPS_Backend.Enums;
 using AUPS_Backend.Repositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
+    [Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
     [Route("api/[controller]")]
     [ApiController]
     public class PlantController : ControllerBase
