@@ -25,6 +25,9 @@ public partial class ProductionOrder
     [Column("note")]
     public string Note { get; set; } = null!;
 
+    [Column("current_technological_procedure")]
+    public int CurrentTechnologicalProcedure { get; set; }
+
     [Column("employee_id")]
     public Guid EmployeeId { get; set; }
 

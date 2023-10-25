@@ -15,6 +15,8 @@ namespace AUPS_Backend.DTO
 
         public string? Note { get; set; }
 
+        public int CurrentTechnologicalProcedure { get; set; }
+
         public Guid EmployeeId { get; set; }
 
         public Guid ObjectOfLaborId { get; set; }

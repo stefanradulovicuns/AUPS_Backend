@@ -10,7 +10,7 @@ using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
-    [Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
+    //[Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
     [Route("api/[controller]")]
     [ApiController]
     public class TechnologicalProcedureController : ControllerBase

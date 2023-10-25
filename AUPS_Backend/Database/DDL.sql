@@ -84,6 +84,7 @@ create table production_order (
 	end_date date not null,
 	quantity int not null,
 	note nvarchar(max) not null,
+	current_technological_procedure int not null,
 	employee_id uniqueidentifier not null foreign key references employee(employee_id) on delete cascade,
 	object_of_labor_id uniqueidentifier not null foreign key references object_of_labor(object_of_labor_id) on delete cascade
 );
@@ -116,6 +117,7 @@ create table technological_procedure (
 
 create table object_of_labor_technological_procedure (
 	object_of_labor_technological_procedure_id uniqueidentifier not null primary key,
+	order_of_execution int not null,
 	object_of_labor_id uniqueidentifier not null foreign key references object_of_labor(object_of_labor_id) on delete cascade,
 	technological_procedure_id uniqueidentifier not null foreign key references technological_procedure(technological_procedure_id) on delete cascade
 );

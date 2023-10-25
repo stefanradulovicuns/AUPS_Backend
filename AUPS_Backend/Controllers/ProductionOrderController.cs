@@ -10,17 +10,19 @@ using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
-    [Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
+    //[Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductionOrderController : ControllerBase
     {
         private readonly IProductionOrderRepository _productionOrderRepository;
+        private readonly IObjectOfLaborTechnologicalProcedureRepository _objectOfLaborTechnologicalProcedureRepository;
         private readonly IMapper _mapper;
 
-        public ProductionOrderController(IProductionOrderRepository productionOrderRepository, IMapper mapper)
+        public ProductionOrderController(IProductionOrderRepository productionOrderRepository, IObjectOfLaborTechnologicalProcedureRepository objectOfLaborTechnologicalProcedureRepository, IMapper mapper)
         {
             _productionOrderRepository = productionOrderRepository;
+            _objectOfLaborTechnologicalProcedureRepository = objectOfLaborTechnologicalProcedureRepository;
             _mapper = mapper;
         }
 
@@ -87,7 +89,9 @@ namespace AUPS_Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<ProductionOrderDTO>> CreateProductionOrder(ProductionOrderCreateDTO productionOrder)
         {
-            var createdProductionOrder = await _productionOrderRepository.AddProductionOrder(_mapper.Map<ProductionOrder>(productionOrder));
+            var newProductionOrder = _mapper.Map<ProductionOrder>(productionOrder);
+            newProductionOrder.CurrentTechnologicalProcedure = 0;
+            var createdProductionOrder = await _productionOrderRepository.AddProductionOrder(newProductionOrder);
 
             return CreatedAtAction("GetProductionOrder", new { id = createdProductionOrder.ProductionOrderId }, _mapper.Map<ProductionOrderDTO>(createdProductionOrder));
         }
@@ -102,6 +106,26 @@ namespace AUPS_Backend.Controllers
             }
 
             var updatedProductionOrder = await _productionOrderRepository.UpdateProductionOrder(_mapper.Map<ProductionOrder>(productionOrder));
+
+            return Ok(_mapper.Map<ProductionOrderDTO>(updatedProductionOrder));
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<ProductionOrderDTO>> FinishCurrentTechnologicalProcedure(Guid id)
+        {
+            var matchingProductionOrder = await _productionOrderRepository.GetProductionOrderById(id);
+            if (matchingProductionOrder == null)
+            {
+                return NotFound();
+            }
+
+            var objectOfLaborTechnologicalProcedures = await _objectOfLaborTechnologicalProcedureRepository.GetObjectOfLaborTechnologicalProceduresByObjectOfLaborId(matchingProductionOrder.ObjectOfLaborId);
+            if (objectOfLaborTechnologicalProcedures.Any())
+            {
+                matchingProductionOrder.CurrentTechnologicalProcedure++;
+            }
+
+            var updatedProductionOrder = await _productionOrderRepository.UpdateProductionOrder(matchingProductionOrder);
 
             return Ok(_mapper.Map<ProductionOrderDTO>(updatedProductionOrder));
         }

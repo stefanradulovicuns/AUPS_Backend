@@ -8,7 +8,9 @@ namespace AUPS_Backend.Profiles
     {
         public ObjectOfLaborTechnologicalProcedureProfile()
         {
-            CreateMap<ObjectOfLaborTechnologicalProcedure, ObjectOfLaborTechnologicalProcedureDTO>();
+            CreateMap<ObjectOfLaborTechnologicalProcedure, ObjectOfLaborTechnologicalProcedureDTO>()
+                .ForMember(dest => dest.TechnologicalProcedureName,
+                opt => opt.MapFrom(src => src.TechnologicalProcedure.TechnologicalProcedureName));
             CreateMap<ObjectOfLaborTechnologicalProcedureCreateDTO, ObjectOfLaborTechnologicalProcedure>();
             CreateMap<ObjectOfLaborTechnologicalProcedureUpdateDTO, ObjectOfLaborTechnologicalProcedure>();
         }

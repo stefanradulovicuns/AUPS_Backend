@@ -31,13 +31,21 @@ namespace AUPS_Backend.Repositories
 
         public async Task<List<ObjectOfLaborTechnologicalProcedure>> GetAllObjectOfLaborTechnologicalProcedures()
         {
-            return await _context.ObjectOfLaborTechnologicalProcedures.ToListAsync();
+            return await _context.ObjectOfLaborTechnologicalProcedures
+                .Include("ObjectOfLabor")
+                .Include("TechnologicalProcedure")
+                .ToListAsync();
         }
 
         public async Task<ObjectOfLaborTechnologicalProcedure?> GetObjectOfLaborTechnologicalProcedureById(Guid id)
         {
             return await _context.ObjectOfLaborTechnologicalProcedures
                 .FirstOrDefaultAsync(ooltp => ooltp.ObjectOfLaborTechnologicalProcedureId == id);
+        }
+
+        public async Task<List<ObjectOfLaborTechnologicalProcedure>> GetObjectOfLaborTechnologicalProceduresByObjectOfLaborId(Guid objectOfLaborId)
+        {
+            return await _context.ObjectOfLaborTechnologicalProcedures.Where(ooltp => ooltp.ObjectOfLaborId == objectOfLaborId).ToListAsync();
         }
 
         public async Task<ObjectOfLaborTechnologicalProcedure> UpdateObjectOfLaborTechnologicalProcedure(ObjectOfLaborTechnologicalProcedure objectOfLaborTechnologicalProcedure)
@@ -49,6 +57,7 @@ namespace AUPS_Backend.Repositories
                 return objectOfLaborTechnologicalProcedure;
             }
 
+            matchingObjectOfLaborTechnologicalProcedure.OrderOfExecution = objectOfLaborTechnologicalProcedure.OrderOfExecution;
             matchingObjectOfLaborTechnologicalProcedure.ObjectOfLaborId = objectOfLaborTechnologicalProcedure.ObjectOfLaborId;
             matchingObjectOfLaborTechnologicalProcedure.TechnologicalProcedureId = objectOfLaborTechnologicalProcedure.TechnologicalProcedureId;
 

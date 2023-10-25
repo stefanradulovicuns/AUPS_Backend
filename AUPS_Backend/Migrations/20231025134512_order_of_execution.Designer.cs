@@ -4,6 +4,7 @@ using AUPS_Backend.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AUPS_Backend.Migrations
 {
     [DbContext(typeof(AupsContext))]
-    partial class AupsContextModelSnapshot : ModelSnapshot
+    [Migration("20231025134512_order_of_execution")]
+    partial class order_of_execution
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,10 +160,6 @@ namespace AUPS_Backend.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("object_of_labor_id");
 
-                    b.Property<int>("OrderOfExecution")
-                        .HasColumnType("int")
-                        .HasColumnName("order_of_execution");
-
                     b.Property<Guid>("TechnologicalProcedureId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("technological_procedure_id");
@@ -300,6 +299,10 @@ namespace AUPS_Backend.Migrations
                     b.Property<int>("Duration")
                         .HasColumnType("int")
                         .HasColumnName("duration");
+
+                    b.Property<int>("OrderOfExecution")
+                        .HasColumnType("int")
+                        .HasColumnName("order_of_execution");
 
                     b.Property<Guid>("OrganizationalUnitId")
                         .HasColumnType("uniqueidentifier")

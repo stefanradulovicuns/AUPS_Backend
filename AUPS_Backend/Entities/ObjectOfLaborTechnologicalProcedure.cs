@@ -13,6 +13,9 @@ public partial class ObjectOfLaborTechnologicalProcedure
     [Column("object_of_labor_technological_procedure_id")]
     public Guid ObjectOfLaborTechnologicalProcedureId { get; set; }
 
+    [Column("order_of_execution")]
+    public int OrderOfExecution { get; set; }
+
     [Column("object_of_labor_id")]
     public Guid ObjectOfLaborId { get; set; }
 

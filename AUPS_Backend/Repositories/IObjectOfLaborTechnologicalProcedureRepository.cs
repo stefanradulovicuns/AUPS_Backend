@@ -6,6 +6,8 @@ namespace AUPS_Backend.Repositories
     {
         Task<List<ObjectOfLaborTechnologicalProcedure>> GetAllObjectOfLaborTechnologicalProcedures();
 
+        Task<List<ObjectOfLaborTechnologicalProcedure>> GetObjectOfLaborTechnologicalProceduresByObjectOfLaborId(Guid objectOfLaborId);
+
         Task<ObjectOfLaborTechnologicalProcedure?> GetObjectOfLaborTechnologicalProcedureById(Guid id);
 
         Task<ObjectOfLaborTechnologicalProcedure> AddObjectOfLaborTechnologicalProcedure(ObjectOfLaborTechnologicalProcedure objectOfLaborTechnologicalProcedure);

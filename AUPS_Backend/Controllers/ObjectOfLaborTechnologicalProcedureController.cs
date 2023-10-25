@@ -10,7 +10,7 @@ using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
-    [Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
+    //[Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
     [Route("api/[controller]")]
     [ApiController]
     public class ObjectOfLaborTechnologicalProcedureController : ControllerBase
@@ -25,9 +25,13 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ObjectOfLaborTechnologicalProcedureDTO>> GetObjectOfLaborTechnologicalProcedures(string? search, string? sortBy, SortOrderOptions? sortOrder, int page, int count)
+        public async Task<ActionResult<ObjectOfLaborTechnologicalProcedureDTO>> GetObjectOfLaborTechnologicalProcedures(string? search, string? sortBy, SortOrderOptions? sortOrder, int page, int count, Guid? objectOfLaborId)
         {
             var objectOfLaborTechnologicalProcedures = await _objectOfLaborTechnologicalProcedureRepository.GetAllObjectOfLaborTechnologicalProcedures();
+            if (objectOfLaborId != null)
+            {
+                objectOfLaborTechnologicalProcedures = objectOfLaborTechnologicalProcedures.Where(temp => temp.ObjectOfLaborId == objectOfLaborId).ToList();
+            }
             /*
             if (!string.IsNullOrEmpty(search))
             {
@@ -40,10 +44,14 @@ namespace AUPS_Backend.Controllers
             {
                 (nameof(ObjectOfLaborTechnologicalProcedureDTO.ObjectOfLaborTechnologicalProcedureId), SortOrderOptions.ASC) => objectOfLaborTechnologicalProcedures.OrderBy(ooltp => ooltp.ObjectOfLaborTechnologicalProcedureId).ToList(),
                 (nameof(ObjectOfLaborTechnologicalProcedureDTO.ObjectOfLaborTechnologicalProcedureId), SortOrderOptions.DESC) => objectOfLaborTechnologicalProcedures.OrderByDescending(ooltp => ooltp.ObjectOfLaborTechnologicalProcedureId).ToList(),
+                (nameof(ObjectOfLaborTechnologicalProcedureDTO.OrderOfExecution), SortOrderOptions.ASC) => objectOfLaborTechnologicalProcedures.OrderBy(ooltp => ooltp.OrderOfExecution).ToList(),
+                (nameof(ObjectOfLaborTechnologicalProcedureDTO.OrderOfExecution), SortOrderOptions.DESC) => objectOfLaborTechnologicalProcedures.OrderByDescending(ooltp => ooltp.OrderOfExecution).ToList(),
                 (nameof(ObjectOfLaborTechnologicalProcedureDTO.ObjectOfLaborId), SortOrderOptions.ASC) => objectOfLaborTechnologicalProcedures.OrderBy(ooltp => ooltp.ObjectOfLaborId).ToList(),
                 (nameof(ObjectOfLaborTechnologicalProcedureDTO.ObjectOfLaborId), SortOrderOptions.DESC) => objectOfLaborTechnologicalProcedures.OrderByDescending(ooltp => ooltp.ObjectOfLaborId).ToList(),
                 (nameof(ObjectOfLaborTechnologicalProcedureDTO.TechnologicalProcedureId), SortOrderOptions.ASC) => objectOfLaborTechnologicalProcedures.OrderBy(ooltp => ooltp.TechnologicalProcedureId).ToList(),
                 (nameof(ObjectOfLaborTechnologicalProcedureDTO.TechnologicalProcedureId), SortOrderOptions.DESC) => objectOfLaborTechnologicalProcedures.OrderByDescending(ooltp => ooltp.TechnologicalProcedureId).ToList(),
+                (nameof(ObjectOfLaborTechnologicalProcedureDTO.TechnologicalProcedureName), SortOrderOptions.ASC) => objectOfLaborTechnologicalProcedures.OrderBy(ooltp => ooltp.TechnologicalProcedure.TechnologicalProcedureName).ToList(),
+                (nameof(ObjectOfLaborTechnologicalProcedureDTO.TechnologicalProcedureName), SortOrderOptions.DESC) => objectOfLaborTechnologicalProcedures.OrderByDescending(ooltp => ooltp.TechnologicalProcedure.TechnologicalProcedureName).ToList(),
                 _ => objectOfLaborTechnologicalProcedures,
             };
 
