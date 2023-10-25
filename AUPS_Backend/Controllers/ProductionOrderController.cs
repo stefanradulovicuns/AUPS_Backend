@@ -1,10 +1,12 @@
 ﻿using AUPS_Backend.DTO;
 using AUPS_Backend.Entities;
 using AUPS_Backend.Enums;
+using AUPS_Backend.Identity;
 using AUPS_Backend.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
@@ -17,13 +19,17 @@ namespace AUPS_Backend.Controllers
     {
         private readonly IProductionOrderRepository _productionOrderRepository;
         private readonly IObjectOfLaborTechnologicalProcedureRepository _objectOfLaborTechnologicalProcedureRepository;
+        private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProductionOrderController(IProductionOrderRepository productionOrderRepository, IObjectOfLaborTechnologicalProcedureRepository objectOfLaborTechnologicalProcedureRepository, IMapper mapper)
+        public ProductionOrderController(IProductionOrderRepository productionOrderRepository, IObjectOfLaborTechnologicalProcedureRepository objectOfLaborTechnologicalProcedureRepository, IEmployeeRepository employeeRepository, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _productionOrderRepository = productionOrderRepository;
             _objectOfLaborTechnologicalProcedureRepository = objectOfLaborTechnologicalProcedureRepository;
+            _employeeRepository = employeeRepository;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -52,8 +58,12 @@ namespace AUPS_Backend.Controllers
                 (nameof(ProductionOrderDTO.Note), SortOrderOptions.DESC) => productionOrders.OrderByDescending(po => po.Note).ToList(),
                 (nameof(ProductionOrderDTO.EmployeeId), SortOrderOptions.ASC) => productionOrders.OrderBy(po => po.EmployeeId).ToList(),
                 (nameof(ProductionOrderDTO.EmployeeId), SortOrderOptions.DESC) => productionOrders.OrderByDescending(po => po.EmployeeId).ToList(),
+                (nameof(ProductionOrderDTO.Manager), SortOrderOptions.ASC) => productionOrders.OrderBy(po => po.Employee.FirstName).ThenBy(po => po.Employee.LastName).ToList(),
+                (nameof(ProductionOrderDTO.Manager), SortOrderOptions.DESC) => productionOrders.OrderByDescending(po => po.Employee.FirstName).ThenByDescending(po => po.Employee.LastName).ToList(),
                 (nameof(ProductionOrderDTO.ObjectOfLaborId), SortOrderOptions.ASC) => productionOrders.OrderBy(po => po.ObjectOfLaborId).ToList(),
                 (nameof(ProductionOrderDTO.ObjectOfLaborId), SortOrderOptions.DESC) => productionOrders.OrderByDescending(po => po.ObjectOfLaborId).ToList(),
+                (nameof(ProductionOrderDTO.ObjectOfLaborName), SortOrderOptions.ASC) => productionOrders.OrderBy(po => po.ObjectOfLabor.ObjectOfLaborName).ToList(),
+                (nameof(ProductionOrderDTO.ObjectOfLaborName), SortOrderOptions.DESC) => productionOrders.OrderByDescending(po => po.ObjectOfLabor.ObjectOfLaborName).ToList(),
                 _ => productionOrders.OrderBy(po => po.StartDate).ThenBy(po => po.EndDate).ToList(),
             };
 
@@ -68,6 +78,11 @@ namespace AUPS_Backend.Controllers
             }
 
             var productionOrdersDto = _mapper.Map<List<ProductionOrderDTO>>(productionOrders);
+            foreach(var productionOrderDto in productionOrdersDto)
+            {
+                var objectOfLaborTechnologicalProcedures = await _objectOfLaborTechnologicalProcedureRepository.GetObjectOfLaborTechnologicalProceduresByObjectOfLaborId(productionOrderDto.ObjectOfLaborId);
+                productionOrderDto.CurrentState = objectOfLaborTechnologicalProcedures.Any() ? (productionOrderDto.CurrentTechnologicalProcedure / objectOfLaborTechnologicalProcedures.Count) * 100 : 0;
+            }
             productionOrdersDto[0].TotalCount = totalCount;
 
             return Ok(productionOrdersDto);
@@ -91,6 +106,12 @@ namespace AUPS_Backend.Controllers
         {
             var newProductionOrder = _mapper.Map<ProductionOrder>(productionOrder);
             newProductionOrder.CurrentTechnologicalProcedure = 0;
+            var currentUser = await _userManager.GetUserAsync(User);
+            var manager = await _employeeRepository.GetEmployeeByEmail(currentUser.Email);
+            if (manager != null)
+            {
+                newProductionOrder.EmployeeId = manager.EmployeeId;
+            }
             var createdProductionOrder = await _productionOrderRepository.AddProductionOrder(newProductionOrder);
 
             return CreatedAtAction("GetProductionOrder", new { id = createdProductionOrder.ProductionOrderId }, _mapper.Map<ProductionOrderDTO>(createdProductionOrder));
@@ -98,22 +119,31 @@ namespace AUPS_Backend.Controllers
 
         [HttpPut]
         public async Task<ActionResult<ProductionOrderDTO>> UpdateProductionOrder(ProductionOrderUpdateDTO productionOrder)
-        {
+        { 
             var matchingProductionOrder = await _productionOrderRepository.GetProductionOrderById(productionOrder.ProductionOrderId);
             if (matchingProductionOrder == null)
             {
                 return NotFound();
             }
 
-            var updatedProductionOrder = await _productionOrderRepository.UpdateProductionOrder(_mapper.Map<ProductionOrder>(productionOrder));
+            var currentUser = await _userManager.GetUserAsync(User);
+            var manager = await _employeeRepository.GetEmployeeById(matchingProductionOrder.EmployeeId);
+            if (manager == null || currentUser.Email != manager.Email)
+            {
+                return Unauthorized();
+            }
+
+            var editedProductionOrder = _mapper.Map<ProductionOrder>(productionOrder);
+            editedProductionOrder.EmployeeId = manager.EmployeeId;
+            var updatedProductionOrder = await _productionOrderRepository.UpdateProductionOrder(editedProductionOrder);
 
             return Ok(_mapper.Map<ProductionOrderDTO>(updatedProductionOrder));
         }
 
-        [HttpPatch("{id}")]
-        public async Task<ActionResult<ProductionOrderDTO>> FinishCurrentTechnologicalProcedure(Guid id)
+        [HttpPut("finishCurrentTechnologicalProcedure")]
+        public async Task<ActionResult<ProductionOrderDTO>> FinishCurrentTechnologicalProcedure(ProductionOrderDTO productionOrder)
         {
-            var matchingProductionOrder = await _productionOrderRepository.GetProductionOrderById(id);
+            var matchingProductionOrder = await _productionOrderRepository.GetProductionOrderById(productionOrder.ProductionOrderId);
             if (matchingProductionOrder == null)
             {
                 return NotFound();
@@ -133,11 +163,20 @@ namespace AUPS_Backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductionOrder(Guid id)
         {
-            bool isDeleted = await _productionOrderRepository.DeleteProductionOrder(id);
-            if (!isDeleted)
+            var productionOrder = await _productionOrderRepository.GetProductionOrderById(id);
+            if (productionOrder == null)
             {
                 return NotFound();
             }
+
+            var manager = await _employeeRepository.GetEmployeeById(productionOrder.EmployeeId);
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (manager == null || currentUser.Email != manager.Email)
+            {
+                return Unauthorized();
+            }
+
+            await _productionOrderRepository.DeleteProductionOrder(id);
 
             return NoContent();
         }

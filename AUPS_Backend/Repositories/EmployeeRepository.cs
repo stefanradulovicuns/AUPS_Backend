@@ -62,5 +62,10 @@ namespace AUPS_Backend.Repositories
             await _context.SaveChangesAsync();
             return matchingEmployee;
         }
+
+        public async Task<Employee?> GetEmployeeByEmail(string email)
+        {
+            return await _context.Employees.FirstOrDefaultAsync(e => e.Email == email);
+        }
     }
 }

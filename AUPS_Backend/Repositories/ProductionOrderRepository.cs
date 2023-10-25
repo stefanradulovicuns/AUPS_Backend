@@ -29,12 +29,18 @@ namespace AUPS_Backend.Repositories
 
         public async Task<List<ProductionOrder>> GetAllProductionOrders()
         {
-            return await _context.ProductionOrders.ToListAsync();
+            return await _context.ProductionOrders
+                .Include("Employee")
+                .Include("ObjectOfLabor")
+                .ToListAsync();
         }
 
         public async Task<ProductionOrder?> GetProductionOrderById(Guid id)
         {
-            return await _context.ProductionOrders.FirstOrDefaultAsync(po => po.ProductionOrderId == id);
+            return await _context.ProductionOrders
+                .Include("Employee")
+                .Include("ObjectOfLabor")
+                .FirstOrDefaultAsync(po => po.ProductionOrderId == id);
         }
 
         public async Task<ProductionOrder> UpdateProductionOrder(ProductionOrder productionOrder)

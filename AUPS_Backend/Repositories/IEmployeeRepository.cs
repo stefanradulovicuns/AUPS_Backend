@@ -8,6 +8,8 @@ namespace AUPS_Backend.Repositories
 
         Task<Employee?> GetEmployeeById(Guid id);
 
+        Task<Employee?> GetEmployeeByEmail(string email);
+
         Task<Employee> AddEmployee(Employee employee);
 
         Task<Employee> UpdateEmployee(Employee employee);

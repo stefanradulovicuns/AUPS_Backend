@@ -17,9 +17,15 @@ namespace AUPS_Backend.DTO
 
         public int CurrentTechnologicalProcedure { get; set; }
 
+        public double CurrentState { get; set; }
+
         public Guid EmployeeId { get; set; }
 
+        public string? Manager { get; set; }
+
         public Guid ObjectOfLaborId { get; set; }
+
+        public string? ObjectOfLaborName { get; set; }
 
         public int TotalCount { get; set; }
     }
