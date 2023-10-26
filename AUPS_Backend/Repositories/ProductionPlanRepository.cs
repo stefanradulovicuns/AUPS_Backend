@@ -29,7 +29,9 @@ namespace AUPS_Backend.Repositories
 
         public async Task<List<ProductionPlan>> GetAllProductionPlans()
         {
-            return await _context.ProductionPlans.ToListAsync();
+            return await _context.ProductionPlans
+                .Include("ObjectOfLabor")
+                .ToListAsync();
         }
 
         public async Task<ProductionPlan?> GetProductionPlanById(Guid id)

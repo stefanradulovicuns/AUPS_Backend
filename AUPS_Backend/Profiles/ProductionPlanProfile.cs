@@ -8,7 +8,9 @@ namespace AUPS_Backend.Profiles
     {
         public ProductionPlanProfile()
         {
-            CreateMap<ProductionPlan, ProductionPlanDTO>();
+            CreateMap<ProductionPlan, ProductionPlanDTO>()
+                .ForMember(dest => dest.ObjectOfLaborName,
+                opt => opt.MapFrom(src => src.ObjectOfLabor.ObjectOfLaborName));
             CreateMap<ProductionPlanCreateDTO, ProductionPlan>();
             CreateMap<ProductionPlanUpdateDTO, ProductionPlan>();
         }

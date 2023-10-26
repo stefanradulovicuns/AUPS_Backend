@@ -58,6 +58,12 @@ namespace AUPS_Backend.Controllers
                 (nameof(ObjectOfLaborTechnologicalProcedureDTO.TechnologicalProcedureId), SortOrderOptions.DESC) => objectOfLaborTechnologicalProcedures.OrderByDescending(ooltp => ooltp.TechnologicalProcedureId).ToList(),
                 (nameof(ObjectOfLaborTechnologicalProcedureDTO.TechnologicalProcedureName), SortOrderOptions.ASC) => objectOfLaborTechnologicalProcedures.OrderBy(ooltp => ooltp.TechnologicalProcedure.TechnologicalProcedureName).ToList(),
                 (nameof(ObjectOfLaborTechnologicalProcedureDTO.TechnologicalProcedureName), SortOrderOptions.DESC) => objectOfLaborTechnologicalProcedures.OrderByDescending(ooltp => ooltp.TechnologicalProcedure.TechnologicalProcedureName).ToList(),
+                (nameof(ObjectOfLaborTechnologicalProcedureDTO.TechnologicalSystemName), SortOrderOptions.ASC) => objectOfLaborTechnologicalProcedures.OrderBy(ooltp => ooltp.TechnologicalProcedure.TechnologicalSystem.TechnologicalSystemName).ToList(),
+                (nameof(ObjectOfLaborTechnologicalProcedureDTO.TechnologicalSystemName), SortOrderOptions.DESC) => objectOfLaborTechnologicalProcedures.OrderByDescending(ooltp => ooltp.TechnologicalProcedure.TechnologicalSystem.TechnologicalSystemName).ToList(),
+                (nameof(ObjectOfLaborTechnologicalProcedureDTO.PlantName), SortOrderOptions.ASC) => objectOfLaborTechnologicalProcedures.OrderBy(ooltp => ooltp.TechnologicalProcedure.Plant.PlantName).ToList(),
+                (nameof(ObjectOfLaborTechnologicalProcedureDTO.PlantName), SortOrderOptions.DESC) => objectOfLaborTechnologicalProcedures.OrderByDescending(ooltp => ooltp.TechnologicalProcedure.Plant.PlantName).ToList(),
+                (nameof(ObjectOfLaborTechnologicalProcedureDTO.OrganizationalUnitName), SortOrderOptions.ASC) => objectOfLaborTechnologicalProcedures.OrderBy(ooltp => ooltp.TechnologicalProcedure.OrganizationalUnit.OrganizationalUnitName).ToList(),
+                (nameof(ObjectOfLaborTechnologicalProcedureDTO.OrganizationalUnitName), SortOrderOptions.DESC) => objectOfLaborTechnologicalProcedures.OrderByDescending(ooltp => ooltp.TechnologicalProcedure.OrganizationalUnit.OrganizationalUnitName).ToList(),
                 _ => objectOfLaborTechnologicalProcedures,
             };
 
@@ -72,20 +78,6 @@ namespace AUPS_Backend.Controllers
             }
 
             var objectOfLaborTechnologicalProceduresDto = _mapper.Map<List<ObjectOfLaborTechnologicalProcedureDTO>>(objectOfLaborTechnologicalProcedures);
-            int index = 0;
-            foreach(var objectOfLaborTechnologicalProcedureDto in objectOfLaborTechnologicalProceduresDto)
-            {
-                var technologicalSystem = await _technologicalSystemRepository.GetTechnologicalSystemById(objectOfLaborTechnologicalProcedures[index].TechnologicalProcedure.TechnologicalSystemId);
-                objectOfLaborTechnologicalProcedureDto.TechnologicalSystemName = technologicalSystem != null ? technologicalSystem.TechnologicalSystemName : "";
-
-                var plant = await _plantRepository.GetPlantById(objectOfLaborTechnologicalProcedures[index].TechnologicalProcedure.PlantId);
-                objectOfLaborTechnologicalProcedureDto.PlantName = plant != null ? plant.PlantName : "";
-
-                var organizationalUnit = await _organizationalUnitRepository.GetOrganizationalUnitById(objectOfLaborTechnologicalProcedures[index].TechnologicalProcedure.OrganizationalUnitId);
-                objectOfLaborTechnologicalProcedureDto.OrganizationalUnitName = organizationalUnit != null ? organizationalUnit.OrganizationalUnitName : "";
-
-                index++;
-            }
             objectOfLaborTechnologicalProceduresDto[0].TotalCount = totalCount;
 
             return Ok(objectOfLaborTechnologicalProceduresDto);

@@ -34,7 +34,9 @@ namespace AUPS_Backend.Repositories
 
         public async Task<List<ObjectOfLabor>> GetAllObjectOfLabors()
         {
-            return await _context.ObjectOfLabors.ToListAsync();
+            return await _context.ObjectOfLabors
+                .Include("Warehouse")
+                .ToListAsync();
         }
 
         public async Task<ObjectOfLabor> UpdateObjectOfLabor(ObjectOfLabor objectOfLabor)

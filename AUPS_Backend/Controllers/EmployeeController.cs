@@ -69,9 +69,13 @@ namespace AUPS_Backend.Controllers
                 (nameof(EmployeeDTO.DateOfEmployment), SortOrderOptions.DESC) => employees.OrderByDescending(e => e.DateOfEmployment).ToList(),
                 (nameof(EmployeeDTO.WorkplaceId), SortOrderOptions.ASC) => employees.OrderBy(e => e.WorkplaceId).ToList(),
                 (nameof(EmployeeDTO.WorkplaceId), SortOrderOptions.DESC) => employees.OrderByDescending(e => e.WorkplaceId).ToList(),
+                (nameof(EmployeeDTO.WorkplaceName), SortOrderOptions.ASC) => employees.OrderBy(e => e.Workplace.WorkplaceName).ToList(),
+                (nameof(EmployeeDTO.WorkplaceName), SortOrderOptions.DESC) => employees.OrderByDescending(e => e.Workplace.WorkplaceName).ToList(),
                 (nameof(EmployeeDTO.OrganizationalUnitId), SortOrderOptions.ASC) => employees.OrderBy(e => e.OrganizationalUnitId).ToList(),
                 (nameof(EmployeeDTO.OrganizationalUnitId), SortOrderOptions.DESC) => employees.OrderByDescending(e => e.OrganizationalUnitId).ToList(),
-                _ => employees.OrderBy(e => e.FirstName).ThenBy(e => e.LastName).ToList(),
+                (nameof(EmployeeDTO.OrganizationalUnitName), SortOrderOptions.ASC) => employees.OrderBy(e => e.OrganizationalUnit.OrganizationalUnitName).ToList(),
+                (nameof(EmployeeDTO.OrganizationalUnitName), SortOrderOptions.DESC) => employees.OrderByDescending(e => e.OrganizationalUnit.OrganizationalUnitName).ToList(),
+                _ => employees.OrderBy(e => e.LastName).ThenBy(e => e.FirstName).ToList(),
             };
 
             int totalCount = employees.Count();

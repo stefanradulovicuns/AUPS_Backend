@@ -8,7 +8,9 @@ namespace AUPS_Backend.Profiles
     {
         public ObjectOfLaborProfile()
         {
-            CreateMap<ObjectOfLabor, ObjectOfLaborDTO>();
+            CreateMap<ObjectOfLabor, ObjectOfLaborDTO>()
+                .ForMember(dest => dest.WarehouseFullAddress,
+                opt => opt.MapFrom(src => src.Warehouse.City + ", " + src.Warehouse.Address));
             CreateMap<ObjectOfLaborCreateDTO, ObjectOfLabor>();
             CreateMap<ObjectOfLaborUpdateDTO, ObjectOfLabor>();
         }

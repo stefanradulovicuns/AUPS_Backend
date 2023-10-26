@@ -34,7 +34,10 @@ namespace AUPS_Backend.Repositories
 
         public async Task<List<Employee>> GetAllEmployees()
         {
-            return await _context.Employees.ToListAsync();
+            return await _context.Employees
+                .Include("Workplace")
+                .Include("OrganizationalUnit")
+                .ToListAsync();
         }
 
         public async Task<Employee> UpdateEmployee(Employee employee)

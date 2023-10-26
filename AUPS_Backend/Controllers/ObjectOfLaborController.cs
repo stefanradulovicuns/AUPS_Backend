@@ -50,6 +50,8 @@ namespace AUPS_Backend.Controllers
                 (nameof(ObjectOfLaborDTO.StockQuantity), SortOrderOptions.DESC) => objectOfLabors.OrderByDescending(ool => ool.StockQuantity).ToList(),
                 (nameof(ObjectOfLaborDTO.WarehouseId), SortOrderOptions.ASC) => objectOfLabors.OrderBy(ool => ool.WarehouseId).ToList(),
                 (nameof(ObjectOfLaborDTO.WarehouseId), SortOrderOptions.DESC) => objectOfLabors.OrderByDescending(ool => ool.WarehouseId).ToList(),
+                (nameof(ObjectOfLaborDTO.WarehouseFullAddress), SortOrderOptions.ASC) => objectOfLabors.OrderBy(ool => ool.Warehouse.City).ThenBy(ool => ool.Warehouse.Address).ToList(),
+                (nameof(ObjectOfLaborDTO.WarehouseFullAddress), SortOrderOptions.DESC) => objectOfLabors.OrderByDescending(ool => ool.Warehouse.City).ThenByDescending(ool => ool.Warehouse.Address).ToList(),
                 _ => objectOfLabors.OrderBy(ool => ool.ObjectOfLaborName).ToList(),
             };
 

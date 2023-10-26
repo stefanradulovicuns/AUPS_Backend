@@ -31,7 +31,11 @@ namespace AUPS_Backend.DTO
 
         public Guid WorkplaceId { get; set; }
 
+        public string? WorkplaceName { get; set; }
+
         public Guid OrganizationalUnitId { get; set; }
+
+        public string? OrganizationalUnitName { get; set; }
 
         public int TotalCount { get; set; }
     }

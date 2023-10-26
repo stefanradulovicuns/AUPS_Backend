@@ -47,10 +47,16 @@ namespace AUPS_Backend.Controllers
                 (nameof(TechnologicalProcedureDTO.Duration), SortOrderOptions.DESC) => technologicalProcedures.OrderByDescending(tp => tp.Duration).ToList(),
                 (nameof(TechnologicalProcedureDTO.OrganizationalUnitId), SortOrderOptions.ASC) => technologicalProcedures.OrderBy(tp => tp.OrganizationalUnitId).ToList(),
                 (nameof(TechnologicalProcedureDTO.OrganizationalUnitId), SortOrderOptions.DESC) => technologicalProcedures.OrderByDescending(tp => tp.OrganizationalUnitId).ToList(),
+                (nameof(TechnologicalProcedureDTO.OrganizationalUnitName), SortOrderOptions.ASC) => technologicalProcedures.OrderBy(tp => tp.OrganizationalUnit.OrganizationalUnitName).ToList(),
+                (nameof(TechnologicalProcedureDTO.OrganizationalUnitName), SortOrderOptions.DESC) => technologicalProcedures.OrderByDescending(tp => tp.OrganizationalUnit.OrganizationalUnitName).ToList(),
                 (nameof(TechnologicalProcedureDTO.PlantId), SortOrderOptions.ASC) => technologicalProcedures.OrderBy(tp => tp.PlantId).ToList(),
                 (nameof(TechnologicalProcedureDTO.PlantId), SortOrderOptions.DESC) => technologicalProcedures.OrderByDescending(tp => tp.PlantId).ToList(),
+                (nameof(TechnologicalProcedureDTO.PlantName), SortOrderOptions.ASC) => technologicalProcedures.OrderBy(tp => tp.Plant.PlantName).ToList(),
+                (nameof(TechnologicalProcedureDTO.PlantName), SortOrderOptions.DESC) => technologicalProcedures.OrderByDescending(tp => tp.Plant.PlantName).ToList(),
                 (nameof(TechnologicalProcedureDTO.TechnologicalSystemId), SortOrderOptions.ASC) => technologicalProcedures.OrderBy(tp => tp.TechnologicalSystemId).ToList(),
                 (nameof(TechnologicalProcedureDTO.TechnologicalSystemId), SortOrderOptions.DESC) => technologicalProcedures.OrderByDescending(tp => tp.TechnologicalSystemId).ToList(),
+                (nameof(TechnologicalProcedureDTO.TechnologicalSystemName), SortOrderOptions.ASC) => technologicalProcedures.OrderBy(tp => tp.TechnologicalSystem.TechnologicalSystemName).ToList(),
+                (nameof(TechnologicalProcedureDTO.TechnologicalSystemName), SortOrderOptions.DESC) => technologicalProcedures.OrderByDescending(tp => tp.TechnologicalSystem.TechnologicalSystemName).ToList(),
                 _ => technologicalProcedures.OrderBy(tp => tp.TechnologicalProcedureName).ToList(),
             };
 

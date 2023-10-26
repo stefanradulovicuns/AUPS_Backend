@@ -18,6 +18,8 @@ namespace AUPS_Backend.DTO
 
         public Guid WarehouseId { get; set; }
 
+        public string? WarehouseFullAddress { get; set; }
+
         public int TotalCount { get; set; }
     }
 }

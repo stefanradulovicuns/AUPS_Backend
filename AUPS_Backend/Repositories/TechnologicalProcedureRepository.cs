@@ -29,7 +29,11 @@ namespace AUPS_Backend.Repositories
 
         public async Task<List<TechnologicalProcedure>> GetAllTechnologicalProcedures()
         {
-            return await _context.TechnologicalProcedures.ToListAsync();
+            return await _context.TechnologicalProcedures
+                .Include("OrganizationalUnit")
+                .Include("TechnologicalSystem")
+                .Include("Plant")
+                .ToListAsync();
         }
 
         public async Task<TechnologicalProcedure?> GetTechnologicalProcedureById(Guid id)

@@ -13,9 +13,15 @@ namespace AUPS_Backend.DTO
 
         public Guid OrganizationalUnitId { get; set; }
 
+        public string? OrganizationalUnitName { get; set; }
+
         public Guid PlantId { get; set; }
 
+        public string? PlantName { get; set; }
+
         public Guid TechnologicalSystemId { get; set; }
+
+        public string? TechnologicalSystemName { get; set; }
 
         public int TotalCount { get; set; }
     }

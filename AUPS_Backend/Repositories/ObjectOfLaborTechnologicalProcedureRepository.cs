@@ -34,6 +34,9 @@ namespace AUPS_Backend.Repositories
             return await _context.ObjectOfLaborTechnologicalProcedures
                 .Include("ObjectOfLabor")
                 .Include("TechnologicalProcedure")
+                .Include("TechnologicalProcedure.TechnologicalSystem")
+                .Include("TechnologicalProcedure.OrganizationalUnit")
+                .Include("TechnologicalProcedure.Plant")
                 .ToListAsync();
         }
 

@@ -46,6 +46,8 @@ namespace AUPS_Backend.Controllers
                 (nameof(ProductionPlanDTO.Description), SortOrderOptions.DESC) => productionPlans.OrderByDescending(pp => pp.Description).ToList(),
                 (nameof(ProductionPlanDTO.ObjectOfLaborId), SortOrderOptions.ASC) => productionPlans.OrderBy(pp => pp.ObjectOfLaborId).ToList(),
                 (nameof(ProductionPlanDTO.ObjectOfLaborId), SortOrderOptions.DESC) => productionPlans.OrderByDescending(pp => pp.ObjectOfLaborId).ToList(),
+                (nameof(ProductionPlanDTO.ObjectOfLaborName), SortOrderOptions.ASC) => productionPlans.OrderBy(pp => pp.ObjectOfLabor.ObjectOfLaborName).ToList(),
+                (nameof(ProductionPlanDTO.ObjectOfLaborName), SortOrderOptions.DESC) => productionPlans.OrderByDescending(pp => pp.ObjectOfLabor.ObjectOfLaborName).ToList(),
                 _ => productionPlans.OrderBy(pp => pp.ProductionPlanName).ToList(),
             };
 

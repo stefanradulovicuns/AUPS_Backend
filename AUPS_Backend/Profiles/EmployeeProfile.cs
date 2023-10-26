@@ -8,7 +8,11 @@ namespace AUPS_Backend.Profiles
     {
         public EmployeeProfile()
         {
-            CreateMap<Employee, EmployeeDTO>();
+            CreateMap<Employee, EmployeeDTO>()
+                .ForMember(dest => dest.WorkplaceName,
+                opt => opt.MapFrom(src => src.Workplace.WorkplaceName))
+                .ForMember(dest => dest.OrganizationalUnitName,
+                opt => opt.MapFrom(src => src.OrganizationalUnit.OrganizationalUnitName));
             CreateMap<EmployeeCreateDTO, Employee>();
             CreateMap<EmployeeUpdateDTO, Employee>();
         }

@@ -85,6 +85,7 @@ create table production_order (
 	quantity int not null,
 	note nvarchar(max) not null,
 	current_technological_procedure int not null,
+	current_technological_procedure_executed bit not null,
 	employee_id uniqueidentifier not null foreign key references employee(employee_id) on delete cascade,
 	object_of_labor_id uniqueidentifier not null foreign key references object_of_labor(object_of_labor_id) on delete cascade
 );
