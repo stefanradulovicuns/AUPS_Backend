@@ -1,7 +1,10 @@
 ﻿using AUPS_Backend.DTO;
+using AUPS_Backend.Entities;
 using AUPS_Backend.Enums;
 using AUPS_Backend.Identity;
+using AUPS_Backend.Repositories;
 using AUPS_Backend.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,17 +14,23 @@ namespace AUPS_Backend.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IWorkplaceRepository _workplaceRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IJwtService _jwtService;
+        private readonly IMapper _mapper;
 
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, IJwtService jwtService)
+        public AuthController(IEmployeeRepository employeeRepository, IWorkplaceRepository workplaceRepository, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IMapper mapper)
         {
+            _employeeRepository = employeeRepository;
+            _workplaceRepository = workplaceRepository;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _jwtService = jwtService;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -37,7 +46,7 @@ namespace AUPS_Backend.Controllers
 
             IdentityResult result = await _userManager.CreateAsync(user, registerDTO.Password);
 
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 if (registerDTO.UserType == UserTypeOptions.Admin)
                 {
@@ -62,7 +71,7 @@ namespace AUPS_Backend.Controllers
                     }
                 }
 
-                await _userManager.AddToRoleAsync(user, UserTypeOptions.User.ToString());
+                await _userManager.AddToRoleAsync(user, registerDTO.UserType.ToString());
                 await _signInManager.SignInAsync(user, isPersistent: false);
 
                 var authenticationResponse = await _jwtService.CreateJwtToken(user);
@@ -73,6 +82,64 @@ namespace AUPS_Backend.Controllers
             string errorMessage = string.Join(" | ", result.Errors.Select(e => e.Description));
             return Problem(errorMessage);
         }
+
+        [HttpPost("registerFirstUser")]
+        public async Task<ActionResult<AuthenticationResponse>> RegisterFirstUser(EmployeeCreateDTO employee)
+        {
+            var employees = await _employeeRepository.GetAllEmployees();
+            if (employees.Any())
+            {
+                return BadRequest();
+            }
+
+            ApplicationUser user = new ApplicationUser()
+            {
+                Email = employee.Email,
+                PhoneNumber = employee.PhoneNumber,
+                UserName = employee.Email,
+                PersonName = employee.Email
+            };
+
+            IdentityResult result = await _userManager.CreateAsync(user, employee.Password);
+
+            if (result.Succeeded)
+            {
+                if (await _roleManager.FindByNameAsync(UserTypeOptions.Admin.ToString()) is null)
+                {
+                    ApplicationRole applicationRole = new ApplicationRole()
+                    {
+                        Name = UserTypeOptions.Admin.ToString()
+                    };
+                    await _roleManager.CreateAsync(applicationRole);
+                }
+
+                if (await _workplaceRepository.GetWorkplaceByName(UserTypeOptions.Admin.ToString()) is null)
+                {
+                    Workplace workplace = new Workplace()
+                    {
+                        WorkplaceName = UserTypeOptions.Admin.ToString()
+                    };
+                    var createdWorkplace = await _workplaceRepository.AddWorkplace(workplace);
+                }
+
+                await _userManager.AddToRoleAsync(user, UserTypeOptions.Admin.ToString());
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                var adminWorkplace = await _workplaceRepository.GetWorkplaceByName(UserTypeOptions.Admin.ToString());
+                if (adminWorkplace != null)
+                {
+                    employee.WorkplaceId = adminWorkplace.WorkplaceId;
+                }
+                var createdEmployee = await _employeeRepository.AddEmployee(_mapper.Map<Employee>(employee));
+
+                var authenticationResponse = await _jwtService.CreateJwtToken(user);
+
+                return Ok(authenticationResponse);
+            }
+
+            string errorMessage = string.Join(" | ", result.Errors.Select(e => e.Description));
+            return Problem(errorMessage);
+        }
+
 
         [HttpPost("login")]
         public async Task<ActionResult<AuthenticationResponse>> Login(LoginDTO loginDTO)

@@ -81,11 +81,6 @@ namespace AUPS_Backend.Controllers
         {
             var createdWorkplace = await _workplaceRepository.AddWorkplace(_mapper.Map<Workplace>(workplace));
 
-            if (createdWorkplace == null)
-            {
-                return Problem("Error during creating new workplace");
-            }
-
             if (await _roleManager.FindByNameAsync(createdWorkplace.WorkplaceName) is null)
             {
                 ApplicationRole role = new ApplicationRole()

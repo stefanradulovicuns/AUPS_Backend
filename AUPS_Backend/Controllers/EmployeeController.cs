@@ -104,52 +104,9 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<ActionResult<EmployeeDTO>> CreateEmployee(EmployeeCreateDTO employee)
         {
-            if (!(await _employeeRepository.GetAllEmployees()).Any())
-            {
-                Workplace? adminWorkplace = await _workplaceRepository.GetWorkplaceByName(UserTypeOptions.Admin.ToString());
-                
-                if (adminWorkplace == null)
-                {
-                    adminWorkplace = new Workplace()
-                    {
-                        WorkplaceName = UserTypeOptions.Admin.ToString()
-                    };
-                    await _workplaceRepository.AddWorkplace(adminWorkplace);
-
-                    if (await _roleManager.FindByNameAsync(UserTypeOptions.Admin.ToString()) is null)
-                    {
-                        ApplicationRole adminRole = new ApplicationRole()
-                        {
-                            Name = UserTypeOptions.Admin.ToString()
-                        };
-                        await _roleManager.CreateAsync(adminRole);
-                    }
-                }
-
-                if (employee.WorkplaceId != adminWorkplace?.WorkplaceId)
-                {
-                    return BadRequest("First user should be admin");
-                }
-            }
-            else
-            {
-                var currentUser = await _userManager.GetUserAsync(User);
-                if (currentUser == null
-                    || !(await _userManager.IsInRoleAsync(currentUser, UserTypeOptions.Admin.ToString())))
-                {
-                    return Unauthorized();
-                }
-            }
-
             var createdEmployee = await _employeeRepository.AddEmployee(_mapper.Map<Employee>(employee));
-
-            if (createdEmployee == null)
-            {
-                return Problem("Error during creating new employee");
-            }
 
             ApplicationUser user = new ApplicationUser()
             {
