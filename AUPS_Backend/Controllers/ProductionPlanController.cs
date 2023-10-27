@@ -10,7 +10,7 @@ using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
-    //[Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
+    [Authorize(Roles = "Admin, Menadzer")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductionPlanController : ControllerBase
@@ -81,6 +81,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProductionPlanDTO>> CreateProductionPlan(ProductionPlanCreateDTO productionPlan)
         {
             var createdProductionPlan = await _productionPlanRepository.AddProductionPlan(_mapper.Map<ProductionPlan>(productionPlan));
@@ -89,6 +90,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProductionPlanDTO>> UpdateProductionPlan(ProductionPlanUpdateDTO productionPlan)
         {
             var matchingProductionPlan = await _productionPlanRepository.GetProductionPlanById(productionPlan.ProductionPlanId);
@@ -103,6 +105,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProductionPlan(Guid id)
         {
             bool isDeleted = await _productionPlanRepository.DeleteProductionPlan(id);

@@ -10,7 +10,7 @@ using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
-    //[Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ObjectOfLaborController : ControllerBase
@@ -85,6 +85,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ObjectOfLaborDTO>> CreateObjectOfLabor(ObjectOfLaborCreateDTO objectOfLabor)
         {
             var createdObjectOfLabor = await _objectOfLaborRepository.AddObjectOfLabor(_mapper.Map<ObjectOfLabor>(objectOfLabor));
@@ -93,6 +94,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ObjectOfLaborDTO>> UpdateObjectOfLabor(ObjectOfLaborUpdateDTO objectOfLabor)
         {
             var matchingObjectOfLabor = await _objectOfLaborRepository.GetObjectOfLaborById(objectOfLabor.ObjectOfLaborId);
@@ -107,6 +109,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteObjectOfLabor(Guid id)
         {
             bool isDeleted = await _objectOfLaborRepository.DeleteObjectOfLabor(id);

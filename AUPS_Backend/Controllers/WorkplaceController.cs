@@ -12,7 +12,7 @@ using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
-    //[Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class WorkplaceController : ControllerBase

@@ -152,6 +152,25 @@ public partial class AupsContext : IdentityDbContext<ApplicationUser, Applicatio
                 OrganizationalUnitName = "Administracija"
             });
 
+        modelBuilder.Entity<Workplace>().HasData(new List<Workplace>()
+            {
+                new Workplace()
+                {
+                    WorkplaceId = Guid.NewGuid(),
+                    WorkplaceName = "Admin"
+                },
+                new Workplace()
+                {
+                    WorkplaceId = Guid.NewGuid(),
+                    WorkplaceName = "Menadzer"
+                },
+                new Workplace()
+                {
+                    WorkplaceId = Guid.NewGuid(),
+                    WorkplaceName = "Radnik u proizvodnji"
+                }
+            });
+
         OnModelCreatingPartial(modelBuilder);
     }
 

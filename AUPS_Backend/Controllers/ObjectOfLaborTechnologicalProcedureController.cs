@@ -10,7 +10,7 @@ using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
-    //[Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ObjectOfLaborTechnologicalProcedureController : ControllerBase
@@ -99,6 +99,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ObjectOfLaborTechnologicalProcedureDTO>> CreateObjectOfLaborTechnologicalProcedure(ObjectOfLaborTechnologicalProcedureCreateDTO objectOfLaborTechnologicalProcedure)
         {
             var createdObjectOfLaborTechnologicalProcedure = await _objectOfLaborTechnologicalProcedureRepository.AddObjectOfLaborTechnologicalProcedure(_mapper.Map<ObjectOfLaborTechnologicalProcedure>(objectOfLaborTechnologicalProcedure));
@@ -107,6 +108,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ObjectOfLaborTechnologicalProcedureDTO>> UpdateObjectOfLaborTechnologicalProcedure(ObjectOfLaborTechnologicalProcedureUpdateDTO objectOfLaborTechnologicalProcedure)
         {
             var matchingObjectOfLaborTechnologicalProcedure = await _objectOfLaborTechnologicalProcedureRepository.GetObjectOfLaborTechnologicalProcedureById(objectOfLaborTechnologicalProcedure.ObjectOfLaborTechnologicalProcedureId);
@@ -121,6 +123,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteObjectOfLaborTechnologicalProcedure(Guid id)
         {
             bool isDeleted = await _objectOfLaborTechnologicalProcedureRepository.DeleteObjectOfLaborTechnologicalProcedure(id);

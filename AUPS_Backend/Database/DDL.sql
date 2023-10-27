@@ -51,7 +51,6 @@ create table employee (
 	first_name nvarchar(50) not null,
 	last_name nvarchar(50) not null,
 	email nvarchar(100) not null unique,
-	password nvarchar(max) not null,
 	jmbg nvarchar(13) not null unique,
 	phone_number nvarchar(15) not null,
 	address nvarchar(100) not null,

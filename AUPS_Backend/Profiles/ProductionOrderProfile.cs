@@ -12,7 +12,9 @@ namespace AUPS_Backend.Profiles
                 .ForMember(dest => dest.ObjectOfLaborName,
                 opt => opt.MapFrom(src => src.ObjectOfLabor.ObjectOfLaborName))
                 .ForMember(dest => dest.Manager,
-                opt => opt.MapFrom(src => src.Employee.FirstName + " " + src.Employee.LastName));
+                opt => opt.MapFrom(src => src.Employee.FirstName + " " + src.Employee.LastName))
+                .ForMember(dest => dest.ManagerEmail,
+                opt => opt.MapFrom(src => src.Employee.Email));
             CreateMap<ProductionOrderCreateDTO, ProductionOrder>();
             CreateMap<ProductionOrderUpdateDTO, ProductionOrder>();
         }

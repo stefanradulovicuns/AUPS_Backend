@@ -29,7 +29,9 @@ namespace AUPS_Backend.Repositories
 
         public async Task<ObjectOfLabor?> GetObjectOfLaborById(Guid id)
         {
-            return await _context.ObjectOfLabors.FirstOrDefaultAsync(ool => ool.ObjectOfLaborId == id);
+            return await _context.ObjectOfLabors
+                .Include("Warehouse")
+                .FirstOrDefaultAsync(ool => ool.ObjectOfLaborId == id);
         }
 
         public async Task<List<ObjectOfLabor>> GetAllObjectOfLabors()

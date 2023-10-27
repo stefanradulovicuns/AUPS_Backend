@@ -25,6 +25,8 @@ namespace AUPS_Backend.DTO
 
         public string? Manager { get; set; }
 
+        public string? ManagerEmail { get; set; }
+
         public Guid ObjectOfLaborId { get; set; }
 
         public string? ObjectOfLaborName { get; set; }

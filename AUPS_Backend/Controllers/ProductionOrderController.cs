@@ -12,7 +12,7 @@ using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
-    //[Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductionOrderController : ControllerBase
@@ -105,6 +105,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Menadzer")]
         public async Task<ActionResult<ProductionOrderDTO>> CreateProductionOrder(ProductionOrderCreateDTO productionOrder)
         {
             var newProductionOrder = _mapper.Map<ProductionOrder>(productionOrder);
@@ -122,6 +123,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Menadzer")]
         public async Task<ActionResult<ProductionOrderDTO>> UpdateProductionOrder(ProductionOrderUpdateDTO productionOrder)
         { 
             var matchingProductionOrder = await _productionOrderRepository.GetProductionOrderById(productionOrder.ProductionOrderId);
@@ -145,6 +147,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPut("startNextTechnologicalProcedure")]
+        [Authorize(Roles = "Radnik u proizvodnji")]
         public async Task<ActionResult<ProductionOrderDTO>> StartNextTechnologicalProcedure(ProductionOrderDTO productionOrder)
         {
             var matchingProductionOrder = await _productionOrderRepository.GetProductionOrderById(productionOrder.ProductionOrderId);
@@ -166,6 +169,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPut("finishCurrentTechnologicalProcedure")]
+        [Authorize(Roles = "Radnik u proizvodnji")]
         public async Task<ActionResult<ProductionOrderDTO>> FinishCurrentTechnologicalProcedure(ProductionOrderDTO productionOrder)
         {
             var matchingProductionOrder = await _productionOrderRepository.GetProductionOrderById(productionOrder.ProductionOrderId);
@@ -182,6 +186,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Menadzer")]
         public async Task<IActionResult> DeleteProductionOrder(Guid id)
         {
             var productionOrder = await _productionOrderRepository.GetProductionOrderById(id);

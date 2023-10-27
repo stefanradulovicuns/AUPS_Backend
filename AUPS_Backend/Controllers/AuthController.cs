@@ -5,6 +5,7 @@ using AUPS_Backend.Identity;
 using AUPS_Backend.Repositories;
 using AUPS_Backend.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +34,7 @@ namespace AUPS_Backend.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("register")]
+        /*[HttpPost("register")]
         public async Task<ActionResult<AuthenticationResponse>> Register(RegisterDTO registerDTO)
         {
             ApplicationUser user = new ApplicationUser()
@@ -81,9 +82,10 @@ namespace AUPS_Backend.Controllers
 
             string errorMessage = string.Join(" | ", result.Errors.Select(e => e.Description));
             return Problem(errorMessage);
-        }
+        }*/
 
         [HttpPost("registerFirstUser")]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthenticationResponse>> RegisterFirstUser(EmployeeCreateDTO employee)
         {
             var employees = await _employeeRepository.GetAllEmployees();
@@ -142,6 +144,7 @@ namespace AUPS_Backend.Controllers
 
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthenticationResponse>> Login(LoginDTO loginDTO)
         {
             ApplicationUser? user = await _userManager.FindByEmailAsync(loginDTO.Email);
@@ -163,6 +166,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpGet("logout")]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AUPS_Backend.Controllers
 {
-    //[Authorize(Roles = nameof(UserTypeOptions.Admin) + "," + nameof(UserTypeOptions.User))]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeeController : ControllerBase
@@ -124,6 +124,14 @@ namespace AUPS_Backend.Controllers
 
             if (result.Succeeded)
             {
+                if (await _roleManager.FindByNameAsync(workplace?.WorkplaceName) is null)
+                {
+                    ApplicationRole newRole = new ApplicationRole()
+                    {
+                        Name = workplace?.WorkplaceName
+                    };
+                    await _roleManager.CreateAsync(newRole);
+                }
                 await _userManager.AddToRoleAsync(user, workplace?.WorkplaceName);
             }
 
@@ -175,6 +183,16 @@ namespace AUPS_Backend.Controllers
                 {
                     var oldWorkplace = await _workplaceRepository.GetWorkplaceById(oldEmployee.WorkplaceId);
                     var newWorkplace = await _workplaceRepository.GetWorkplaceById(updatedEmployee.WorkplaceId);
+
+                    if (await _roleManager.FindByNameAsync(newWorkplace?.WorkplaceName) is null)
+                    {
+                        ApplicationRole newRole = new ApplicationRole()
+                        {
+                            Name = newWorkplace?.WorkplaceName
+                        };
+                        await _roleManager.CreateAsync(newRole);
+                    }
+
                     await _userManager.RemoveFromRoleAsync(user, oldWorkplace?.WorkplaceName);
                     await _userManager.AddToRoleAsync(user, newWorkplace?.WorkplaceName);
                 }
