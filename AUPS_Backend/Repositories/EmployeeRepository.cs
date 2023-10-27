@@ -52,7 +52,6 @@ namespace AUPS_Backend.Repositories
             matchingEmployee.FirstName = employee.FirstName;
             matchingEmployee.LastName = employee.LastName;
             matchingEmployee.Email = employee.Email;
-            matchingEmployee.Password = employee.Password;
             matchingEmployee.Jmbg = employee.Jmbg;
             matchingEmployee.PhoneNumber = employee.PhoneNumber;
             matchingEmployee.Address = employee.Address;

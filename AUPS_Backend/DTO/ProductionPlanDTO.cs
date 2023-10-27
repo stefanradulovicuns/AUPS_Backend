@@ -8,8 +8,6 @@
 
         public string? Description { get; set; }
 
-        public string? Manager { get; set; }
-
         public Guid ObjectOfLaborId { get; set; }
 
         public string? ObjectOfLaborName { get; set; }

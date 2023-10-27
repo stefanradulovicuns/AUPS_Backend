@@ -11,6 +11,8 @@ namespace AUPS_Backend.Profiles
             CreateMap<ObjectOfLaborTechnologicalProcedure, ObjectOfLaborTechnologicalProcedureDTO>()
                 .ForMember(dest => dest.TechnologicalProcedureName,
                 opt => opt.MapFrom(src => src.TechnologicalProcedure.TechnologicalProcedureName))
+                .ForMember(dest => dest.TechnologicalProcedureDuration,
+                opt => opt.MapFrom(src => src.TechnologicalProcedure.Duration))
                 .ForMember(dest => dest.TechnologicalSystemName,
                 opt => opt.MapFrom(src => src.TechnologicalProcedure.TechnologicalSystem.TechnologicalSystemName))
                 .ForMember(dest => dest.PlantName,

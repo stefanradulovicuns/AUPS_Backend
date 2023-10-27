@@ -28,6 +28,9 @@ public partial class ProductionOrder
     [Column("current_technological_procedure")]
     public int CurrentTechnologicalProcedure { get; set; }
 
+    [Column("current_technological_procedure_executed")]
+    public bool CurrentTechnologicalProcedureExecuted { get; set; }
+
     [Column("employee_id")]
     public Guid EmployeeId { get; set; }
 

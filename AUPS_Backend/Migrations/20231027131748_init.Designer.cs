@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AUPS_Backend.Migrations
 {
     [DbContext(typeof(AupsContext))]
-    [Migration("20231025140952_order_of_execution_moved")]
-    partial class order_of_execution_moved
+    [Migration("20231027131748_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,11 +74,6 @@ namespace AUPS_Backend.Migrations
                     b.Property<Guid>("OrganizationalUnitId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("organizational_unit_id");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("password");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -197,6 +192,13 @@ namespace AUPS_Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("organizational_unit");
+
+                    b.HasData(
+                        new
+                        {
+                            OrganizationalUnitId = new Guid("cb34a64d-9adc-49ba-af1c-86cfe760659c"),
+                            OrganizationalUnitName = "Administracija"
+                        });
                 });
 
             modelBuilder.Entity("AUPS_Backend.Entities.Plant", b =>
@@ -229,6 +231,10 @@ namespace AUPS_Backend.Migrations
                     b.Property<int>("CurrentTechnologicalProcedure")
                         .HasColumnType("int")
                         .HasColumnName("current_technological_procedure");
+
+                    b.Property<bool>("CurrentTechnologicalProcedureExecuted")
+                        .HasColumnType("bit")
+                        .HasColumnName("current_technological_procedure_executed");
 
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uniqueidentifier")

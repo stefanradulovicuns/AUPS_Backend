@@ -53,8 +53,6 @@ namespace AUPS_Backend.Controllers
                 (nameof(EmployeeDTO.LastName), SortOrderOptions.DESC) => employees.OrderByDescending(e => e.LastName).ToList(),
                 (nameof(EmployeeDTO.Email), SortOrderOptions.ASC) => employees.OrderBy(e => e.Email).ToList(),
                 (nameof(EmployeeDTO.Email), SortOrderOptions.DESC) => employees.OrderByDescending(e => e.Email).ToList(),
-                (nameof(EmployeeDTO.Password), SortOrderOptions.ASC) => employees.OrderBy(e => e.Password).ToList(),
-                (nameof(EmployeeDTO.Password), SortOrderOptions.DESC) => employees.OrderByDescending(e => e.Password).ToList(),
                 (nameof(EmployeeDTO.Jmbg), SortOrderOptions.ASC) => employees.OrderBy(e => e.Jmbg).ToList(),
                 (nameof(EmployeeDTO.Jmbg), SortOrderOptions.DESC) => employees.OrderByDescending(e => e.Jmbg).ToList(),
                 (nameof(EmployeeDTO.PhoneNumber), SortOrderOptions.ASC) => employees.OrderBy(e => e.PhoneNumber).ToList(),
@@ -147,7 +145,6 @@ namespace AUPS_Backend.Controllers
                 FirstName = matchingEmployee.FirstName,
                 LastName = matchingEmployee.LastName,
                 Email = matchingEmployee.Email,
-                Password = matchingEmployee.Password,
                 Jmbg = matchingEmployee.Jmbg,
                 PhoneNumber = matchingEmployee.PhoneNumber,
                 Address = matchingEmployee.Address,
@@ -164,8 +161,13 @@ namespace AUPS_Backend.Controllers
             user.PhoneNumber = updatedEmployee.PhoneNumber;
             user.UserName = updatedEmployee.Email;
             user.PersonName = updatedEmployee.Email;
-
+            
             var result = await _userManager.UpdateAsync(user);
+            if (!string.IsNullOrEmpty(employee.Password))
+            {
+                await _userManager.RemovePasswordAsync(user);
+                await _userManager.AddPasswordAsync(user, employee.Password);
+            }
 
             if (result.Succeeded)
             {

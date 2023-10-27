@@ -145,6 +145,13 @@ public partial class AupsContext : IdentityDbContext<ApplicationUser, Applicatio
             entity.Property(e => e.WorkplaceId).ValueGeneratedNever();
         });
 
+        modelBuilder.Entity<OrganizationalUnit>().HasData(
+            new OrganizationalUnit()
+            {
+                OrganizationalUnitId = Guid.NewGuid(),
+                OrganizationalUnitName = "Administracija"
+            });
+
         OnModelCreatingPartial(modelBuilder);
     }
 

@@ -81,7 +81,10 @@ namespace AUPS_Backend.Controllers
             foreach(var productionOrderDto in productionOrdersDto)
             {
                 var objectOfLaborTechnologicalProcedures = await _objectOfLaborTechnologicalProcedureRepository.GetObjectOfLaborTechnologicalProceduresByObjectOfLaborId(productionOrderDto.ObjectOfLaborId);
-                productionOrderDto.CurrentState = objectOfLaborTechnologicalProcedures.Any() ? (productionOrderDto.CurrentTechnologicalProcedure / objectOfLaborTechnologicalProcedures.Count) * 100 : 0;
+                productionOrderDto.CurrentState = objectOfLaborTechnologicalProcedures.Any() ? 
+                    productionOrderDto.CurrentTechnologicalProcedureExecuted ? 
+                    ((productionOrderDto.CurrentTechnologicalProcedure - 1)/ objectOfLaborTechnologicalProcedures.Count) * 100 :
+                    (productionOrderDto.CurrentTechnologicalProcedure / objectOfLaborTechnologicalProcedures.Count) * 100 : 0;
             }
             productionOrdersDto[0].TotalCount = totalCount;
 
@@ -106,6 +109,7 @@ namespace AUPS_Backend.Controllers
         {
             var newProductionOrder = _mapper.Map<ProductionOrder>(productionOrder);
             newProductionOrder.CurrentTechnologicalProcedure = 0;
+            newProductionOrder.CurrentTechnologicalProcedureExecuted = false;
             var currentUser = await _userManager.GetUserAsync(User);
             var manager = await _employeeRepository.GetEmployeeByEmail(currentUser.Email);
             if (manager != null)
@@ -140,6 +144,27 @@ namespace AUPS_Backend.Controllers
             return Ok(_mapper.Map<ProductionOrderDTO>(updatedProductionOrder));
         }
 
+        [HttpPut("startNextTechnologicalProcedure")]
+        public async Task<ActionResult<ProductionOrderDTO>> StartNextTechnologicalProcedure(ProductionOrderDTO productionOrder)
+        {
+            var matchingProductionOrder = await _productionOrderRepository.GetProductionOrderById(productionOrder.ProductionOrderId);
+            if (matchingProductionOrder == null)
+            {
+                return NotFound();
+            }
+
+            var objectOfLaborTechnologicalProcedures = await _objectOfLaborTechnologicalProcedureRepository.GetObjectOfLaborTechnologicalProceduresByObjectOfLaborId(matchingProductionOrder.ObjectOfLaborId);
+            if (objectOfLaborTechnologicalProcedures.Any() && matchingProductionOrder.CurrentTechnologicalProcedure < objectOfLaborTechnologicalProcedures.Count)
+            {
+                matchingProductionOrder.CurrentTechnologicalProcedure++;
+                matchingProductionOrder.CurrentTechnologicalProcedureExecuted = true;
+            }
+
+            var updatedProductionOrder = await _productionOrderRepository.UpdateProductionOrder(matchingProductionOrder);
+
+            return Ok(_mapper.Map<ProductionOrderDTO>(updatedProductionOrder));
+        }
+
         [HttpPut("finishCurrentTechnologicalProcedure")]
         public async Task<ActionResult<ProductionOrderDTO>> FinishCurrentTechnologicalProcedure(ProductionOrderDTO productionOrder)
         {
@@ -149,11 +174,7 @@ namespace AUPS_Backend.Controllers
                 return NotFound();
             }
 
-            var objectOfLaborTechnologicalProcedures = await _objectOfLaborTechnologicalProcedureRepository.GetObjectOfLaborTechnologicalProceduresByObjectOfLaborId(matchingProductionOrder.ObjectOfLaborId);
-            if (objectOfLaborTechnologicalProcedures.Any())
-            {
-                matchingProductionOrder.CurrentTechnologicalProcedure++;
-            }
+            matchingProductionOrder.CurrentTechnologicalProcedureExecuted = false;
 
             var updatedProductionOrder = await _productionOrderRepository.UpdateProductionOrder(matchingProductionOrder);
 

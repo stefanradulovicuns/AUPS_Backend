@@ -27,9 +27,6 @@ public partial class Employee
     [StringLength(100)]
     public string Email { get; set; } = null!;
 
-    [Column("password")]
-    public string Password { get; set; } = null!;
-
     [Column("jmbg")]
     [StringLength(13)]
     public string Jmbg { get; set; } = null!;

@@ -56,6 +56,8 @@ namespace AUPS_Backend.Repositories
             matchingProductionOrder.EndDate = productionOrder.EndDate;
             matchingProductionOrder.Quantity = productionOrder.Quantity;
             matchingProductionOrder.Note = productionOrder.Note;
+            matchingProductionOrder.CurrentTechnologicalProcedure = productionOrder.CurrentTechnologicalProcedure;
+            matchingProductionOrder.CurrentTechnologicalProcedureExecuted = productionOrder.CurrentTechnologicalProcedureExecuted;
             matchingProductionOrder.EmployeeId = productionOrder.EmployeeId;
             matchingProductionOrder.ObjectOfLaborId = productionOrder.ObjectOfLaborId;
 

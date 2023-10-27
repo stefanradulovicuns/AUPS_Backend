@@ -14,6 +14,8 @@
 
         public string? TechnologicalProcedureName { get; set; }
 
+        public int TechnologicalProcedureDuration { get; set; }
+
         public string? TechnologicalSystemName { get; set; }
 
         public string? PlantName { get; set; }
