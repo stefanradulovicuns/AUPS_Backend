@@ -24,6 +24,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<OrganizationalUnitDTO>> GetOrganiaztionalUnits(string? search, string? sortBy, SortOrderOptions? sortOrder, int page, int count)
         {
             var organizationalUnits = await _organizationalUnitRepository.GetAllOrganizationalUnits();
