@@ -10,7 +10,7 @@ using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class WarehouseController : ControllerBase
@@ -79,6 +79,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<WarehouseDTO>> CreateWarehouse(WarehouseCreateDTO warehouse)
         {
             var createdWarehouse = await _warehouseRepository.AddWarehouse(_mapper.Map<Warehouse>(warehouse));
@@ -87,6 +88,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<WarehouseDTO>> Updatewarehouse(WarehouseUpdateDTO warehouse)
         {
             var matchingWarehouse = await _warehouseRepository.GetWarehouseById(warehouse.WarehouseId);
@@ -101,6 +103,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Deletewarehouse(Guid id)
         {
             bool isDeleted = await _warehouseRepository.DeleteWarehouse(id);
