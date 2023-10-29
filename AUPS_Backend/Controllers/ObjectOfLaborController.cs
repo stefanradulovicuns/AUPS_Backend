@@ -33,7 +33,8 @@ namespace AUPS_Backend.Controllers
             {
                 objectOfLabors = objectOfLabors.Where(ool => ool.ObjectOfLaborName.Contains(search, StringComparison.OrdinalIgnoreCase)
                                                 || ool.Price.ToString().Contains(search, StringComparison.OrdinalIgnoreCase)
-                                                || ool.StockQuantity.ToString().Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                                                || ool.StockQuantity.ToString().Contains(search, StringComparison.OrdinalIgnoreCase)
+                                                || (ool.Warehouse.City + ", " + ool.Warehouse.Address).Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             objectOfLabors = (sortBy, sortOrder) switch

@@ -41,7 +41,9 @@ namespace AUPS_Backend.Controllers
             {
                 productionOrders = productionOrders.Where(po => po.StartDate.ToShortDateString().Contains(search, StringComparison.OrdinalIgnoreCase)
                                                 || po.EndDate.ToShortDateString().Contains(search, StringComparison.OrdinalIgnoreCase)
-                                                || po.Quantity.ToString().Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                                                || po.Quantity.ToString().Contains(search, StringComparison.OrdinalIgnoreCase)
+                                                || po.ObjectOfLabor.ObjectOfLaborName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                                || (po.Employee.FirstName + " " + po.Employee.LastName).Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
             }
             
             productionOrders = (sortBy, sortOrder) switch

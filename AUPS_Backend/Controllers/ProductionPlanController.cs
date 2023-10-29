@@ -32,7 +32,8 @@ namespace AUPS_Backend.Controllers
             if (!string.IsNullOrEmpty(search))
             {
                 productionPlans = productionPlans
-                    .Where(pp => pp.ProductionPlanName.Contains(search, StringComparison.OrdinalIgnoreCase))
+                    .Where(pp => pp.ProductionPlanName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                || pp.ObjectOfLabor.ObjectOfLaborName.Contains(search, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 

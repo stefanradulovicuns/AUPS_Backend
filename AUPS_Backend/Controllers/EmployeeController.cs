@@ -40,7 +40,11 @@ namespace AUPS_Backend.Controllers
             {
                 employees = employees.Where(e => e.FirstName.Contains(search, StringComparison.OrdinalIgnoreCase)
                                                 || e.LastName.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                                || e.Email.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                                                || e.Email.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                                || e.City.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                                || e.Address.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                                || e.Workplace.WorkplaceName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                                || e.OrganizationalUnit.OrganizationalUnitName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             employees = (sortBy, sortOrder) switch

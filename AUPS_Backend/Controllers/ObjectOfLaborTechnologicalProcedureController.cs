@@ -38,14 +38,18 @@ namespace AUPS_Backend.Controllers
             {
                 objectOfLaborTechnologicalProcedures = objectOfLaborTechnologicalProcedures.Where(temp => temp.ObjectOfLaborId == objectOfLaborId).ToList();
             }
-            /*
+
             if (!string.IsNullOrEmpty(search))
             {
-                ObjectOfLaborTechnologicalProcedures = ObjectOfLaborTechnologicalProcedures.Where(e => e.FirstName.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                                || e.LastName.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                                || e.Email.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                objectOfLaborTechnologicalProcedures = objectOfLaborTechnologicalProcedures
+                    .Where(temp => temp.OrderOfExecution.ToString().Contains(search, StringComparison.OrdinalIgnoreCase)
+                                || temp.TechnologicalProcedure.TechnologicalProcedureName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                || (temp.TechnologicalProcedure.Duration.ToString() + " min").Contains(search, StringComparison.OrdinalIgnoreCase)
+                                || temp.TechnologicalProcedure.TechnologicalSystem.TechnologicalSystemName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                || temp.TechnologicalProcedure.Plant.PlantName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                || temp.TechnologicalProcedure.OrganizationalUnit.OrganizationalUnitName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            */
+
             objectOfLaborTechnologicalProcedures = (sortBy, sortOrder) switch
             {
                 (nameof(ObjectOfLaborTechnologicalProcedureDTO.ObjectOfLaborTechnologicalProcedureId), SortOrderOptions.ASC) => objectOfLaborTechnologicalProcedures.OrderBy(ooltp => ooltp.ObjectOfLaborTechnologicalProcedureId).ToList(),

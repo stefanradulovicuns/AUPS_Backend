@@ -33,7 +33,7 @@ namespace AUPS_Backend.Controllers
             {
                 warehouses = warehouses.Where(e => e.Address.Contains(search, StringComparison.OrdinalIgnoreCase)
                                                 || e.City.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                                || e.Capacity.ToString().Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                                                || (e.Capacity.ToString() + " m2").Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             warehouses = (sortBy, sortOrder) switch

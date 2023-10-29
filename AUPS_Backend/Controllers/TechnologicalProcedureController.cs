@@ -33,7 +33,10 @@ namespace AUPS_Backend.Controllers
             {
                 technologicalProcedures = technologicalProcedures
                     .Where(tp => tp.TechnologicalProcedureName.Contains(search, StringComparison.OrdinalIgnoreCase) 
-                                || tp.Duration.ToString().Contains(search, StringComparison.OrdinalIgnoreCase))
+                                || (tp.Duration.ToString() + " min").Contains(search, StringComparison.OrdinalIgnoreCase)
+                                || tp.OrganizationalUnit.OrganizationalUnitName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                || tp.TechnologicalSystem.TechnologicalSystemName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                                || tp.Plant.PlantName.Contains(search, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
