@@ -20,6 +20,8 @@
 
         public string? PlantName { get; set; }
 
+        public Guid OrganizationalUnitId { get; set; }
+
         public string? OrganizationalUnitName { get; set; }
 
         public int TotalCount { get; set; }

@@ -10,7 +10,7 @@ using System.Data;
 
 namespace AUPS_Backend.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TechnologicalProcedureController : ControllerBase
@@ -90,6 +90,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<TechnologicalProcedureDTO>> CreateTechnologicalProcedure(TechnologicalProcedureCreateDTO technologicalProcedure)
         {
             var createdTechnologicalProcedure = await _technologicalProcedureRepository.AddTechnologicalProcedure(_mapper.Map<TechnologicalProcedure>(technologicalProcedure));
@@ -98,6 +99,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<TechnologicalProcedureDTO>> UpdateTechnologicalProcedure(TechnologicalProcedureUpdateDTO technologicalProcedure)
         {
             var matchingTechnologicalProcedure = await _technologicalProcedureRepository.GetTechnologicalProcedureById(technologicalProcedure.TechnologicalProcedureId);
@@ -112,6 +114,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTechnologicalProcedure(Guid id)
         {
             bool isDeleted = await _technologicalProcedureRepository.DeleteTechnologicalProcedure(id);
