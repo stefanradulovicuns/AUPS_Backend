@@ -107,7 +107,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Menadzer")]
+        [Authorize(Roles = "Admin,Menadzer")]
         public async Task<ActionResult<ProductionOrderDTO>> CreateProductionOrder(ProductionOrderCreateDTO productionOrder)
         {
             var newProductionOrder = _mapper.Map<ProductionOrder>(productionOrder);
@@ -125,7 +125,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Menadzer")]
+        [Authorize(Roles = "Admin,Menadzer")]
         public async Task<ActionResult<ProductionOrderDTO>> UpdateProductionOrder(ProductionOrderUpdateDTO productionOrder)
         { 
             var matchingProductionOrder = await _productionOrderRepository.GetProductionOrderById(productionOrder.ProductionOrderId);
@@ -188,7 +188,7 @@ namespace AUPS_Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Menadzer")]
+        [Authorize(Roles = "Admin,Menadzer")]
         public async Task<IActionResult> DeleteProductionOrder(Guid id)
         {
             var productionOrder = await _productionOrderRepository.GetProductionOrderById(id);
