@@ -52,9 +52,15 @@ public partial class AupsContext : IdentityDbContext<ApplicationUser, Applicatio
 
             entity.Property(e => e.EmployeeId).ValueGeneratedNever();
 
-            entity.HasOne(d => d.OrganizationalUnit).WithMany(p => p.Employees).HasConstraintName("FK__employee__organi__39987BE6");
+            entity.HasOne(d => d.OrganizationalUnit)
+                .WithMany(p => p.Employees)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__employee__organi__39987BE6");
 
-            entity.HasOne(d => d.Workplace).WithMany(p => p.Employees).HasConstraintName("FK__employee__workpl__38A457AD");
+            entity.HasOne(d => d.Workplace)
+                .WithMany(p => p.Employees)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__employee__workpl__38A457AD");
         });
 
         modelBuilder.Entity<ObjectOfLabor>(entity =>

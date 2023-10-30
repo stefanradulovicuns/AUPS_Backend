@@ -57,8 +57,8 @@ create table employee (
 	city nvarchar(50) not null,
 	sallary numeric(10, 2) not null,
 	date_of_employment date not null,
-	workplace_id uniqueidentifier not null foreign key references workplace(workplace_id) on delete cascade,
-	organizational_unit_id uniqueidentifier not null foreign key references organizational_unit(organizational_unit_id) on delete cascade
+	workplace_id uniqueidentifier not null foreign key references workplace(workplace_id) on delete no action,
+	organizational_unit_id uniqueidentifier not null foreign key references organizational_unit(organizational_unit_id) on delete no action
 );
 
 create table warehouse (
