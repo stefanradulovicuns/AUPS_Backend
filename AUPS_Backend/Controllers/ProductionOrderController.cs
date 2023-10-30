@@ -83,10 +83,21 @@ namespace AUPS_Backend.Controllers
             foreach(var productionOrderDto in productionOrdersDto)
             {
                 var objectOfLaborTechnologicalProcedures = await _objectOfLaborTechnologicalProcedureRepository.GetObjectOfLaborTechnologicalProceduresByObjectOfLaborId(productionOrderDto.ObjectOfLaborId);
-                productionOrderDto.CurrentState = objectOfLaborTechnologicalProcedures.Any() ? 
-                    productionOrderDto.CurrentTechnologicalProcedureExecuted ? 
-                    ((productionOrderDto.CurrentTechnologicalProcedure - 1)/ objectOfLaborTechnologicalProcedures.Count) * 100 :
-                    (productionOrderDto.CurrentTechnologicalProcedure / objectOfLaborTechnologicalProcedures.Count) * 100 : 0;
+                if (objectOfLaborTechnologicalProcedures.Any())
+                {
+                    if (productionOrderDto.CurrentTechnologicalProcedureExecuted)
+                    {
+                        productionOrderDto.CurrentState = (((productionOrderDto.CurrentTechnologicalProcedure - 1) * 1.0) / objectOfLaborTechnologicalProcedures.Count) * 100;
+                    }
+                    else
+                    {
+                        productionOrderDto.CurrentState = (productionOrderDto.CurrentTechnologicalProcedure / (double)objectOfLaborTechnologicalProcedures.Count) * 100;
+                    }
+                }
+                else
+                {
+                    productionOrderDto.CurrentState = 0;
+                }
             }
             productionOrdersDto[0].TotalCount = totalCount;
 
