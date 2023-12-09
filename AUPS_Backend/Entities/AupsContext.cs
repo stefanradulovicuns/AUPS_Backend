@@ -39,6 +39,8 @@ public partial class AupsContext : IdentityDbContext<ApplicationUser, Applicatio
 
     public virtual DbSet<Workplace> Workplaces { get; set; }
 
+    public virtual DbSet<Material> Materials { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:AUPSDb");
 
@@ -142,6 +144,13 @@ public partial class AupsContext : IdentityDbContext<ApplicationUser, Applicatio
             entity.HasKey(e => e.WarehouseId).HasName("PK__warehous__734FE6BF2BC6D417");
 
             entity.Property(e => e.WarehouseId).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<Material>(entity =>
+        {
+            entity.HasKey(e => e.MaterialId).HasName("PK__material__734FE6BF2BC6D112");
+
+            entity.Property(e => e.MaterialId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Workplace>(entity =>

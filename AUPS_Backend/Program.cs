@@ -20,6 +20,7 @@ builder.Services.AddScoped<IOrganizationalUnitRepository, OrganizationalUnitRepo
 builder.Services.AddScoped<IProductionOrderRepository, ProductionOrderRepository>();
 builder.Services.AddScoped<IObjectOfLaborRepository, ObjectOfLaborRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
 builder.Services.AddScoped<IProductionPlanRepository, ProductionPlanRepository>();
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 builder.Services.AddScoped<ITechnologicalSystemRepository, TechnologicalSystemRepository>();

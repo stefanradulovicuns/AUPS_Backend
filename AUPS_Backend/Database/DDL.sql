@@ -30,6 +30,12 @@ if object_id('technological_procedure', 'U') is not null
 if object_id('production_plan', 'U') is not null
 	drop table production_plan;
 
+if object_id('object_of_labor_material', 'U') is not null
+	drop table object_of_labor_material;
+
+if object_id('material', 'U') is not null
+	drop table material;
+
 if object_id('object_of_labor', 'U') is not null
 	drop table object_of_labor;
 
@@ -120,4 +126,17 @@ create table object_of_labor_technological_procedure (
 	order_of_execution int not null,
 	object_of_labor_id uniqueidentifier not null foreign key references object_of_labor(object_of_labor_id) on delete cascade,
 	technological_procedure_id uniqueidentifier not null foreign key references technological_procedure(technological_procedure_id) on delete cascade
+);
+
+create table material (
+	material_id uniqueidentifier not null primary key,
+	material_name nvarchar(200) not null,
+	stock_quantity int not null
+);
+
+create table object_of_labor_material (
+	object_of_labor_material_id uniqueidentifier not null primary key,
+	quantity int not null,
+	object_of_labor_id uniqueidentifier not null foreign key references object_of_labor(object_of_labor_id) on delete cascade,
+	material_id uniqueidentifier not null foreign key references material(material_id) on delete cascade,
 );
