@@ -46,7 +46,7 @@ namespace AUPS_Backend.Repositories
                 return material;
             }
 
-            matchingMaterial.StockQuantity = material.StockQuantity;
+            matchingMaterial.MaterialName = material.MaterialName;
             matchingMaterial.StockQuantity = material.StockQuantity;
 
             await _context.SaveChangesAsync();
