@@ -45,7 +45,10 @@ namespace AUPS_Backend.Repositories
 
         public async Task<List<ObjectOfLaborMaterial>> GetObjectOfLaborMaterialsByObjectOfLaborId(Guid objectOfLaborId)
         {
-            return await _context.ObjectOfLaborMaterials.Where(oolm => oolm.ObjectOfLaborId == objectOfLaborId).ToListAsync();
+            return await _context.ObjectOfLaborMaterials
+                .Include("Material")
+                .Where(oolm => oolm.ObjectOfLaborId == objectOfLaborId)
+                .ToListAsync();
         }
 
         public async Task<ObjectOfLaborMaterial> UpdateObjectOfLaborMaterial(ObjectOfLaborMaterial objectOfLaborMaterial)

@@ -19,14 +19,20 @@ namespace AUPS_Backend.Controllers
     {
         private readonly IProductionOrderRepository _productionOrderRepository;
         private readonly IObjectOfLaborTechnologicalProcedureRepository _objectOfLaborTechnologicalProcedureRepository;
+        private readonly IObjectOfLaborMaterialRepository _objectOfLaborMaterialRepository;
+        private readonly IMaterialRepository _materialRepository;
+        private readonly IObjectOfLaborRepository _objectOfLaborRepository;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProductionOrderController(IProductionOrderRepository productionOrderRepository, IObjectOfLaborTechnologicalProcedureRepository objectOfLaborTechnologicalProcedureRepository, IEmployeeRepository employeeRepository, IMapper mapper, UserManager<ApplicationUser> userManager)
+        public ProductionOrderController(IProductionOrderRepository productionOrderRepository, IObjectOfLaborTechnologicalProcedureRepository objectOfLaborTechnologicalProcedureRepository, IObjectOfLaborMaterialRepository objectOfLaborMaterialRepository, IMaterialRepository materialRepository, IObjectOfLaborRepository objectOfLaborRepository, IEmployeeRepository employeeRepository, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _productionOrderRepository = productionOrderRepository;
             _objectOfLaborTechnologicalProcedureRepository = objectOfLaborTechnologicalProcedureRepository;
+            _objectOfLaborMaterialRepository = objectOfLaborMaterialRepository;
+            _materialRepository = materialRepository;
+            _objectOfLaborRepository = objectOfLaborRepository;
             _employeeRepository = employeeRepository;
             _mapper = mapper;
             _userManager = userManager;
@@ -169,6 +175,25 @@ namespace AUPS_Backend.Controllers
                 return NotFound();
             }
 
+            if (matchingProductionOrder.CurrentTechnologicalProcedure == 0)
+            {
+                var necessaryMaterials = await _objectOfLaborMaterialRepository.GetObjectOfLaborMaterialsByObjectOfLaborId(matchingProductionOrder.ObjectOfLaborId);
+                foreach (var necessaryMaterial in necessaryMaterials)
+                {
+                    if (necessaryMaterial.Quantity > necessaryMaterial.Material.StockQuantity)
+                    {
+                        return BadRequest("Nema dovoljno materijala na zalihama.");
+                    }
+                }
+
+                foreach (var necessaryMaterial in necessaryMaterials)
+                {
+                    var material = necessaryMaterial.Material;
+                    material.StockQuantity = material.StockQuantity - necessaryMaterial.Quantity;
+                    await _materialRepository.UpdateMaterial(material);
+                }
+            }
+
             var objectOfLaborTechnologicalProcedures = await _objectOfLaborTechnologicalProcedureRepository.GetObjectOfLaborTechnologicalProceduresByObjectOfLaborId(matchingProductionOrder.ObjectOfLaborId);
             if (objectOfLaborTechnologicalProcedures.Any() && matchingProductionOrder.CurrentTechnologicalProcedure < objectOfLaborTechnologicalProcedures.Count)
             {
@@ -191,8 +216,15 @@ namespace AUPS_Backend.Controllers
                 return NotFound();
             }
 
-            matchingProductionOrder.CurrentTechnologicalProcedureExecuted = false;
+            var objectOfLaborTechnologicalProcedures = await _objectOfLaborTechnologicalProcedureRepository.GetObjectOfLaborTechnologicalProceduresByObjectOfLaborId(matchingProductionOrder.ObjectOfLaborId);
+            if (matchingProductionOrder.CurrentTechnologicalProcedure == objectOfLaborTechnologicalProcedures.Count)
+            {
+                var objectOfLabor = matchingProductionOrder.ObjectOfLabor;
+                objectOfLabor.StockQuantity += matchingProductionOrder.Quantity;
+                await _objectOfLaborRepository.UpdateObjectOfLabor(objectOfLabor);
+            }
 
+            matchingProductionOrder.CurrentTechnologicalProcedureExecuted = false;
             var updatedProductionOrder = await _productionOrderRepository.UpdateProductionOrder(matchingProductionOrder);
 
             return Ok(_mapper.Map<ProductionOrderDTO>(updatedProductionOrder));
