@@ -11,7 +11,7 @@ namespace AUPS_Backend.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class MaterialController : Controller
+    public class MaterialController : ControllerBase
     {
         private readonly IMaterialRepository _materialRepository;
         private readonly IMapper _mapper;

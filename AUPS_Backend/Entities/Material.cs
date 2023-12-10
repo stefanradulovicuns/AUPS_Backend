@@ -16,5 +16,8 @@ namespace AUPS_Backend.Entities
 
         [Column("stock_quantity")]
         public int StockQuantity { get; set; }
+
+        [InverseProperty("Material")]
+        public virtual ICollection<ObjectOfLaborMaterial> ObjectOfLaborMaterials { get; set; } = new List<ObjectOfLaborMaterial>();
     }
 }

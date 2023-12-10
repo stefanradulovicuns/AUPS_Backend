@@ -23,6 +23,8 @@ public partial class AupsContext : IdentityDbContext<ApplicationUser, Applicatio
 
     public virtual DbSet<ObjectOfLaborTechnologicalProcedure> ObjectOfLaborTechnologicalProcedures { get; set; }
 
+    public virtual DbSet<ObjectOfLaborMaterial> ObjectOfLaborMaterials { get; set; }
+
     public virtual DbSet<OrganizationalUnit> OrganizationalUnits { get; set; }
 
     public virtual DbSet<Plant> Plants { get; set; }
@@ -83,6 +85,17 @@ public partial class AupsContext : IdentityDbContext<ApplicationUser, Applicatio
             entity.HasOne(d => d.ObjectOfLabor).WithMany(p => p.ObjectOfLaborTechnologicalProcedures).HasConstraintName("FK__object_of__objec__544C7222");
 
             entity.HasOne(d => d.TechnologicalProcedure).WithMany(p => p.ObjectOfLaborTechnologicalProcedures).HasConstraintName("FK__object_of__techn__5540965B");
+        });
+
+        modelBuilder.Entity<ObjectOfLaborMaterial>(entity =>
+        {
+            entity.HasKey(e => e.ObjectOfLaborMaterialId).HasName("PK__object_o__7D4DF5F1514A3214");
+
+            entity.Property(e => e.ObjectOfLaborMaterialId).ValueGeneratedNever();
+
+            entity.HasOne(d => d.ObjectOfLabor).WithMany(p => p.ObjectOfLaborMaterials).HasConstraintName("FK__object_of__objec__544C7345");
+
+            entity.HasOne(d => d.Material).WithMany(p => p.ObjectOfLaborMaterials).HasConstraintName("FK__object_of__techn__55409A43");
         });
 
         modelBuilder.Entity<OrganizationalUnit>(entity =>

@@ -34,6 +34,9 @@ public partial class ObjectOfLabor
     public virtual ICollection<ObjectOfLaborTechnologicalProcedure> ObjectOfLaborTechnologicalProcedures { get; set; } = new List<ObjectOfLaborTechnologicalProcedure>();
 
     [InverseProperty("ObjectOfLabor")]
+    public virtual ICollection<ObjectOfLaborMaterial> ObjectOfLaborMaterials { get; set; } = new List<ObjectOfLaborMaterial>();
+
+    [InverseProperty("ObjectOfLabor")]
     public virtual ICollection<ProductionOrder> ProductionOrders { get; set; } = new List<ProductionOrder>();
 
     [InverseProperty("ObjectOfLabor")]

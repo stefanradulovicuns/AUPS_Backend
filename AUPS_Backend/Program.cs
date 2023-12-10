@@ -26,6 +26,7 @@ builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 builder.Services.AddScoped<ITechnologicalSystemRepository, TechnologicalSystemRepository>();
 builder.Services.AddScoped<ITechnologicalProcedureRepository, TechnologicalProcedureRepository>();
 builder.Services.AddScoped<IObjectOfLaborTechnologicalProcedureRepository, ObjectOfLaborTechnologicalProcedureRepository>();
+builder.Services.AddScoped<IObjectOfLaborMaterialRepository, ObjectOfLaborMaterialRepository>();
 
 builder.Services.AddTransient<IJwtService, JwtService>();
 
